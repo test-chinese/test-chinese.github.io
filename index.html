@@ -1,0 +1,1934 @@
+<!doctype html>
+<html lang=ko>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>기초생활중국어 연습</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+SC:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#edf2f1; --card:#fbfdfc; --ink:#14302b; --muted:#5d746f; --line:#d3e0dc;
+  --blue:#1f4e9c; --blue-soft:#e3ebf8; --ok:#1c7f55; --ok-soft:#dff2e8; --warn:#9a5b00; --warn-soft:#fbefd6;
+  --bad:#b3372c; --grid:#b9cdc8;
+  --sans:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --hanzi:"Noto Serif SC","Songti SC","Noto Serif CJK SC","SimSun",serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1620; --card:#16222f; --ink:#e6f0ee; --muted:#9bb2ad; --line:#2a3b4a;
+    --blue:#8fb0ff; --blue-soft:#1e2e4d; --ok:#5cc48f; --ok-soft:#163528; --warn:#e8b25a; --warn-soft:#3a2e14;
+    --bad:#ff8a7c; --grid:#38505a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1620; --card:#16222f; --ink:#e6f0ee; --muted:#9bb2ad; --line:#2a3b4a;
+  --blue:#8fb0ff; --blue-soft:#1e2e4d; --ok:#5cc48f; --ok-soft:#163528; --warn:#e8b25a; --warn-soft:#3a2e14;
+  --bad:#ff8a7c; --grid:#38505a;
+}
+/* 제출 화면 '연습이 필요한 문장' 전용 색: 모든 기기에서 푸른색(정확한 발음) / 연한 붉은색(연습할 발음) */
+:root{--tg:var(--blue); --tb:#c8625a}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--tb:#f0a095} }
+:root[data-theme="dark"]{--tb:#f0a095}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;padding-bottom:84px;-webkit-text-size-adjust:100%}
+button{font-family:inherit;font-size:15px;color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:16px 14px}
+h1{font-size:20px;margin:0 0 2px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px;margin:0 0 12px}
+.namerow{display:flex;gap:8px;align-items:stretch}
+.namerow .name{flex:1;min-width:0;width:auto;text-overflow:ellipsis}
+.clssel{flex:none;width:auto;max-width:96px;padding:11px 8px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.clssel.sel{border-color:var(--blue);color:var(--blue);font-weight:700}
+.clssel.need{border-color:var(--bad);color:var(--bad)}
+.lockbox{text-align:center;padding:22px 16px}
+.lockbox h2{margin:0 0 6px;font-size:18px}
+.lockbox p{margin:4px 0;font-size:14px}
+.lockbox ul{list-style:none;padding:0;margin:10px 0 0;font-size:14px}
+.lockbox li{margin:4px 0}
+body.locked #chips, body.locked #view, body.locked #tabs{display:none}
+#lock[hidden]{display:none}
+.rall{flex:none;font-size:20px;line-height:1;padding:4px 14px;color:var(--mute,#6b7a76);white-space:nowrap}
+.name{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;margin:0 -14px;padding-left:14px;padding-right:14px}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 12px;text-align:left;cursor:pointer;min-width:132px}
+.chip b{display:block;font-size:14px}
+.chip span{font-size:12px;color:var(--muted)}
+.chip.on{border-color:var(--blue);background:var(--blue-soft)}
+.chip.done span{color:var(--ok);font-weight:700}
+.langs{display:flex;gap:6px;margin:10px 0 12px;flex-wrap:wrap}
+.lg{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer;color:var(--muted)}
+.lg.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.notice{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:9px 12px;font-size:13px;margin:10px 0}
+.s{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.s.pass{border-color:var(--ok)}
+.cells{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 6px}
+.cell{width:46px;height:46px;display:grid;place-items:center;font-family:var(--hanzi);font-size:28px;line-height:1;
+  border:1.5px solid var(--grid);border-radius:3px;
+  background:
+    linear-gradient(to right,transparent calc(50% - .5px),var(--grid) calc(50% - .5px),var(--grid) calc(50% + .5px),transparent calc(50% + .5px)) ,
+    linear-gradient(to bottom,transparent calc(50% - .5px),var(--grid) calc(50% - .5px),var(--grid) calc(50% + .5px),transparent calc(50% + .5px));
+  background-size:100% 100%;opacity:1}
+.cell span{position:relative;z-index:1}
+.punc{font-family:var(--hanzi);font-size:24px;align-self:end;padding-bottom:6px;color:var(--muted)}
+.py{font-size:15px;color:var(--blue);font-weight:500;margin:0}
+.mean{font-size:15px;margin:2px 0 10px}
+.btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.b{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 6px;cursor:pointer;min-height:44px}
+.b:disabled{opacity:.4;cursor:not-allowed}
+.b.pri{background:var(--blue);color:#fff;border-color:var(--blue)}
+:root[data-theme="dark"] .b.pri{color:#0b1220}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .b.pri{color:#0b1220}}
+.b.rec{background:var(--bad);color:#fff;border-color:var(--bad)}
+/* 문장 버튼(전 과 공통): 왼쪽 두 열은 크게, 셀프확인·리셋 열은 절반 폭 */
+.btns.bw{grid-template-columns:1fr 1fr .5fr}
+.btns.bw .b{padding:10px 4px}
+.btns.bw .b[data-act=self],.btns.bw .b[data-act=sreset]{padding:4px 2px;font-size:12px;line-height:1.2;white-space:normal;word-break:keep-all}
+.b.rs{color:var(--mute,#6b7a76);font-weight:500}
+.b.okb{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:700}
+.meter{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:10px 0 4px}
+.meter i{display:block;height:100%;background:var(--blue)}
+.meter.good i{background:var(--ok)}
+.res{font-size:13px;color:var(--muted);margin:2px 0}
+.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--ok-soft);color:var(--ok);font-weight:700;margin-left:6px}
+.badge.self{background:var(--blue-soft);color:var(--blue)}
+.card2{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.card2 h2{font-size:17px;margin:0 0 6px}
+.card2 p{margin:6px 0}
+a.lk{display:block;padding:11px 12px;border:1px solid var(--line);border-radius:10px;margin:8px 0;color:var(--blue);text-decoration:none;font-size:14px}
+textarea{width:100%;min-height:84px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;resize:vertical}
+.q{margin:14px 0}
+.q p{font-weight:700;margin:0 0 8px}
+.o{display:block;width:100%;text-align:left;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);margin:6px 0;cursor:pointer}
+.o.right{background:var(--ok-soft);border-color:var(--ok)}
+.o.wrong{background:var(--warn-soft);border-color:var(--bad)}
+.stamp{border:2px solid var(--ok);border-radius:14px;padding:14px;text-align:center;margin:10px 0 14px;background:var(--ok-soft)}
+.stamp.no{border-color:var(--warn);background:var(--warn-soft)}
+.stamp b{font-size:26px;display:block;letter-spacing:.02em}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--muted)}
+.todo{margin:8px 0 0;padding-left:18px;font-size:14px}
+nav{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:560px;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+@media (min-width:560px){nav{max-width:532px;border:1px solid var(--line);border-bottom:0;border-radius:14px 14px 0 0}}
+nav button{flex:1;border:0;background:transparent;padding:10px 4px 9px;font-size:13px;color:var(--muted);cursor:pointer;min-height:56px}
+nav button.on{color:var(--blue);font-weight:700;box-shadow:inset 0 3px 0 var(--blue)}
+nav button em{display:block;font-style:normal;font-size:20px;line-height:1.1}
+.vr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.vr:last-child{border-bottom:0}
+.vm{display:flex;gap:8px;align-items:center;text-align:right;font-size:15px}
+.hz{font-family:var(--hanzi);font-size:22px}
+.py2{font-size:13px;color:var(--blue);margin-left:6px;font-family:var(--sans);font-weight:500}
+.help{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:13px}
+.help summary{cursor:pointer;font-weight:700;color:var(--blue)}
+.help ul{margin:8px 0 2px;padding-left:18px}
+button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.small{font-size:12px;color:var(--muted)}
+.reset{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:13px;cursor:pointer;padding:8px 0}
+
+.lbl{display:inline-block;font-size:11px;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:6px 0 2px}
+.cell.hit{border-color:var(--ok);background-color:var(--ok-soft)}
+.cell.miss{border-color:var(--warn);border-style:dashed;background-color:var(--warn-soft)}
+.grp{font-size:13px;margin:16px 2px -4px;color:var(--muted)}
+.grp b{color:var(--ink)}
+.py,.mean{white-space:pre-line}
+.gc{color:var(--ok);font-weight:700}
+.mc{color:var(--warn);font-weight:700;text-decoration:underline dotted}
+.hb{color:var(--tg);font-weight:700}
+.hr{color:var(--tb);font-weight:700;text-decoration:underline dotted}
+.help ol{margin:8px 0 2px;padding-left:20px}
+.wl>summary{cursor:pointer;font-size:16px;font-weight:800;margin-bottom:6px}
+.okmark{color:var(--ok);font-weight:800;margin-left:6px}
+.scr{font-size:16px;margin:4px 0 2px;color:var(--ink)}
+.scr b{font-size:24px;font-weight:800}
+.hrd{font-size:15px;margin:2px 0;color:var(--muted)}
+.hz2{font-size:22px;font-weight:600;color:var(--ink)}
+.locked{opacity:.35;pointer-events:none;user-select:none}
+.help li{margin:4px 0}
+.vw{padding:10px 0;border-bottom:1px dashed var(--line)}
+.vw:last-child{border-bottom:0}
+.vh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vbtns{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
+.vbtns .b{min-height:40px;font-size:13px;padding:6px 4px}
+/* 단어 카드 배치(전 과 공통): 한자·병음 | 듣기 | 말하기 / 뜻 | 비교하기(말하기 아래) */
+.vg{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px 8px;align-items:center}
+.vg .vg-a{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;min-width:0}
+.vg .vg-a .py2{margin-left:0}
+.vg .b{min-height:40px;font-size:13px;padding:6px 10px;white-space:nowrap}
+.vg .vg-m{grid-column:1 / 3;font-size:14px;color:var(--ink);text-align:left;min-width:0}
+.vg .vg-c{grid-column:3}
+.vg .res{grid-column:1 / -1;margin:0}
+</style>
+</head>
+<body class="locked">
+<div class="wrap">
+  <h1>기초생활중국어 연습</h1>
+  <div id="langs" class="langs"></div>
+  <p class="sub" id="subtitle">① 반·이름 입력 → ② 단어 → ③ 본문 → ④ 퀴즈 순서로 해 보세요.</p>
+  <div class="namerow"><select id="cls" class="clssel" aria-label="반"><option value="">반</option><option value="1">1반</option><option value="2">2반</option></select><input id="name" class="name" placeholder="이름 / Name / Tên / Нэр / 名前" autocomplete="name"><button class="b rall" id="rall" data-act="resetall" title="전체 리셋" aria-label="전체 리셋">↺</button></div>
+  <div id="lock" class="card2 lockbox">…</div>
+  <div id="chips" class="chips"></div>
+  <div id="view"></div>
+</div>
+<nav id="tabs"></nav>
+
+<script>
+/* 원어민 MP3 (id → GitHub 상대경로) */
+const AUDIO={
+  '11-baba':'audio/11/words/11-02baba.mp3',
+  '11-mama':'audio/11/words/11-02mama.mp3',
+  '11-gege':'audio/11/words/11-02gege.mp3',
+  '11-jiejie':'audio/11/words/11-02jiejie.mp3',
+  '11-nanpengyou':'audio/11/words/11-02nanpengyou.mp3',
+  '11-you':'audio/11/words/11-02you.mp3',
+  '11-meiyou':'audio/11/words/11-02meiyou.mp3',
+  '11-yi':'audio/11/words/11-02yi.mp3',
+  '11-ge':'audio/11/words/11-02ge.mp3',
+  '11-duo':'audio/11/words/11-02duo.mp3',
+  '11-piaoliang':'audio/11/words/11-02piaoliang.mp3',
+  '11-yifu':'audio/11/words/11-02yifu.mp3',
+  '11-yuehui':'audio/11/words/11-02yuehui.mp3',
+
+  '11-s1':'audio/11/text/11-01-1.mp3',
+  '11-s2':'audio/11/text/11-01-2.mp3',
+  '11-s3':'audio/11/text/11-01-3.mp3',
+  '11-s4':'audio/11/text/11-01-4.mp3',
+  '11-s5':'audio/11/text/11-01-5.mp3',
+  '11-s6':'audio/11/text/11-01-6.mp3',
+  '11-s7':'audio/11/text/11-01-7.mp3',
+
+  '12-didi':'audio/12/words/12-03didi.mp3',
+  '12-meimei':'audio/12/words/12-03meimei.mp3',
+  '12-ji':'audio/12/words/12-03ji.mp3',
+  '12-jia':'audio/12/words/12-03jia.mp3',
+  '12-kou':'audio/12/words/12-03kou.mp3',
+  '12-liang':'audio/12/words/12-03liang.mp3',
+  '12-san':'audio/12/words/12-03san.mp3',
+  '12-wu':'audio/12/words/12-03wu.mp3',
+
+  '12-s1':'audio/12/text/12-02-01.mp3',
+  '12-s2':'audio/12/text/12-02-02.mp3',
+  '12-s3':'audio/12/text/12-02-03.mp3',
+  '12-s4':'audio/12/text/12-02-04.mp3',
+  '12-s5':'audio/12/text/12-02-05.mp3',
+  '12-s6':'audio/12/text/12-02-06.mp3',
+  '12-s7':'audio/12/text/12-02-07.mp3',
+  '12-s8':'audio/12/text/12-02-08.mp3',
+  '12-s9':'audio/12/text/12-02-09.mp3',
+  '12-s10':'audio/12/text/12-02-10.mp3',
+  '12-s11':'audio/12/text/12-02-11.mp3',
+  '12-s12':'audio/12/text/12-02-12.mp3',
+  '12-s13':'audio/12/text/12-02-13.mp3',
+  '12-s14':'audio/12/text/12-02-14.mp3',
+  '12-s15':'audio/12/text/12-02-15.mp3',
+  '12-s16':'audio/12/text/12-02-16.mp3',
+
+  '13-zhangfu':'audio/13/words/13-02zhangfu.mp3',
+  '13-yaoshi':'audio/13/words/13-02yaoshi.mp3',
+  '13-zai':'audio/13/words/13-02zai.mp3',
+  '13-nar':'audio/13/words/13-02nar.mp3',
+  '13-qizi':'audio/13/words/13-02qizi.mp3',
+  '13-zhuozi':'audio/13/words/13-02zhuozi.mp3',
+  '13-shang':'audio/13/words/13-02shang.mp3',
+  '13-shafa':'audio/13/words/13-02shafa.mp3',
+  '13-xiabian':'audio/13/words/13-02xiabian.mp3',
+  '13-dianhua':'audio/13/words/13-02dianhua.mp3',
+  '13-pangbian':'audio/13/words/13-02pangbian.mp3',
+  '13-shou':'audio/13/words/13-02shou.mp3',
+  '13-li':'audio/13/words/13-02li.mp3',
+
+  '13-s1':'audio/13/text/13-01-01.mp3',
+  '13-s2':'audio/13/text/13-01-02.mp3',
+  '13-s3':'audio/13/text/13-01-03.mp3',
+  '13-s4':'audio/13/text/13-01-04.mp3',
+  '13-s5':'audio/13/text/13-01-05.mp3',
+  '13-s6':'audio/13/text/13-01-06.mp3',
+  '13-s7':'audio/13/text/13-01-07.mp3',
+  '13-s8':'audio/13/text/13-01-08.mp3',
+  '13-s9':'audio/13/text/13-01-09.mp3',
+  '13-s10':'audio/13/text/13-01-10.mp3',
+
+  '14-canzhuo':'audio/14/words/14-03canzhuo.mp3',
+  '14-qianbian':'audio/14/words/14-03qianbian.mp3',
+  '14-shugui':'audio/14/words/14-03shugui.mp3',
+  '14-houbian':'audio/14/words/14-03houbian.mp3',
+  '14-zuobian':'audio/14/words/14-03zuobian.mp3',
+  '14-diannao':'audio/14/words/14-03diannao.mp3',
+  '14-youbian':'audio/14/words/14-03youbian.mp3',
+  '14-yizi':'audio/14/words/14-03yizi.mp3',
+  '14-yigui':'audio/14/words/14-03yigui.mp3',
+
+  '14-s1':'audio/14/text/14-02-01.mp3',
+  '14-s2':'audio/14/text/14-02-02.mp3',
+  '14-s3':'audio/14/text/14-02-03.mp3',
+  '14-s4':'audio/14/text/14-02-04.mp3',
+  '14-s5':'audio/14/text/14-02-05.mp3',
+  '14-s6':'audio/14/text/14-02-06.mp3',
+  '14-s7':'audio/14/text/14-02-07.mp3',
+  '14-s8':'audio/14/text/14-02-08.mp3',
+  '14-s9':'audio/14/text/14-02-09.mp3',
+  '14-s10':'audio/14/text/14-02-10.mp3',
+  '14-s11':'audio/14/text/14-02-11.mp3',
+  '14-s12':'audio/14/text/14-02-12.mp3',
+  '14-s13':'audio/14/text/14-02-13.mp3',
+  '14-s14':'audio/14/text/14-02-14.mp3',
+  '14-s15':'audio/14/text/14-02-15.mp3',
+  '14-s16':'audio/14/text/14-02-16.mp3',
+  '14-s17':'audio/14/text/14-02-17.mp3',
+  '14-s18':'audio/14/text/14-02-18.mp3',
+
+  '15-tiao':'audio/15/words/15-02tiao.mp3',
+  '15-hongse':'audio/15/words/15-02hongse.mp3',
+  '15-qunzi':'audio/15/words/15-02qunzi.mp3',
+  '15-haokan':'audio/15/words/15-02haokan.mp3',
+  '15-baise':'audio/15/words/15-02baise.mp3',
+  '15-huangse':'audio/15/words/15-02huangse.mp3',
+  '15-jian':'audio/15/words/15-02jian.mp3',
+  '15-lvse':'audio/15/words/15-02lvse.mp3',
+  '15-dayi':'audio/15/words/15-02dayi.mp3',
+  '15-zenmeyang':'audio/15/words/15-02zenmeyang.mp3',
+  '15-lanse':'audio/15/words/15-02lanse.mp3',
+  '15-mei':'audio/15/words/15-02mei.mp3',
+  '15-chuan':'audio/15/words/15-02chuan.mp3',
+
+  '15-s1':'audio/15/text/15-01-01.mp3',
+  '15-s2':'audio/15/text/15-01-02.mp3',
+  '15-s3':'audio/15/text/15-01-03.mp3',
+  '15-s4':'audio/15/text/15-01-04.mp3',
+  '15-s5':'audio/15/text/15-01-05.mp3',
+  '15-s6':'audio/15/text/15-01-06.mp3',
+  '15-s7':'audio/15/text/15-01-07.mp3',
+  '15-s8':'audio/15/text/15-01-08.mp3',
+  '15-s9':'audio/15/text/15-01-09.mp3',
+  '15-s10':'audio/15/text/15-01-10.mp3',
+  '15-s11':'audio/15/text/15-01-11.mp3',
+  '15-s12':'audio/15/text/15-01-12.mp3',
+
+  '16-shuang':'audio/16/words/16-03shuang.mp3',
+  '16-zongse':'audio/16/words/16-03zongse.mp3',
+  '16-xie':'audio/16/words/16-03xie.mp3',
+  '16-shufu':'audio/16/words/16-03shufu.mp3',
+  '16-kuzi':'audio/16/words/16-03kuzi.mp3',
+  '16-huise':'audio/16/words/16-03huise.mp3',
+  '16-chenyi':'audio/16/words/16-03chenyi.mp3',
+  '16-qipao':'audio/16/words/16-03qipao.mp3',
+  '16-heise':'audio/16/words/16-03heise.mp3',
+  '16-shouji':'audio/16/words/16-03shouji.mp3',
+
+  '16-s1':'audio/16/text/16-02-01.mp3',
+  '16-s2':'audio/16/text/16-02-02.mp3',
+  '16-s3':'audio/16/text/16-02-03.mp3',
+  '16-s4':'audio/16/text/16-02-04.mp3',
+  '16-s5':'audio/16/text/16-02-05.mp3',
+  '16-s6':'audio/16/text/16-02-06.mp3',
+  '16-s7':'audio/16/text/16-02-07.mp3',
+  '16-s8':'audio/16/text/16-02-08.mp3',
+  '16-s9':'audio/16/text/16-02-09.mp3',
+  '16-s10':'audio/16/text/16-02-10.mp3',
+  '16-s11':'audio/16/text/16-02-11.mp3',
+  '16-s12':'audio/16/text/16-02-12.mp3',
+  '16-s13':'audio/16/text/16-02-13.mp3',
+  '16-s14':'audio/16/text/16-02-14.mp3',
+  '16-s15':'audio/16/text/16-02-15.mp3',
+  '16-s16':'audio/16/text/16-02-16.mp3',
+  '16-s17':'audio/16/text/16-02-17.mp3',
+  '16-s18':'audio/16/text/16-02-18.mp3',
+
+  '17-naxie':'audio/17/words/17-02naxie.mp3',
+  '17-chuantong':'audio/17/words/17-02chuantong.mp3',
+  '17-jieri':'audio/17/words/17-02jieri.mp3',
+  '17-chunjie':'audio/17/words/17-02chunjie.mp3',
+  '17-yuanxiaojie':'audio/17/words/17-02yuanxiaojie.mp3',
+  '17-zhongqiujie':'audio/17/words/17-02zhongqiujie.mp3',
+  '17-yue':'audio/17/words/17-02yue.mp3',
+  '17-ri':'audio/17/words/17-02ri.mp3',
+  '17-nongli':'audio/17/words/17-02nongli.mp3',
+  '17-qingrenjie':'audio/17/words/17-02qingrenji.mp3',
+  '17-nian':'audio/17/words/17-02nian.mp3',
+  '17-tian':'audio/17/words/17-02tian.mp3',
+  '17-xingqisi':'audio/17/words/17-02xingqisi.mp3',
+  '17-xingqi':'audio/17/words/17-02xingqi.mp3',
+
+  '17-s1':'audio/17/text/17-01-01.mp3',
+  '17-s2':'audio/17/text/17-01-02.mp3',
+  '17-s3':'audio/17/text/17-01-03.mp3',
+  '17-s4':'audio/17/text/17-01-04.mp3',
+  '17-s5':'audio/17/text/17-01-05.mp3',
+  '17-s6':'audio/17/text/17-01-06.mp3',
+  '17-s7':'audio/17/text/17-01-07.mp3',
+  '17-s8':'audio/17/text/17-01-08.mp3',
+  '17-s9':'audio/17/text/17-01-09.mp3',
+  '17-s10':'audio/17/text/17-01-10.mp3',
+  '17-s11':'audio/17/text/17-01-11.mp3',
+  '17-s12':'audio/17/text/17-01-12.mp3',
+
+  '18-laodongjie':'audio/18/words/18-03laodongjie.mp3',
+  '18-hao':'audio/18/words/18-03hao.mp3',
+  '18-jinnian':'audio/18/words/18-03jinnian.mp3',
+  '18-fuhuojie':'audio/18/words/18-03fuhuojie.mp3',
+  '18-fuqinjie':'audio/18/words/18-03fuqinjie.mp3',
+  '18-muqinjie':'audio/18/words/18-03muqinjie.mp3',
+  '18-xingqiji':'audio/18/words/18-03xingqiji.mp3',
+  '18-xingqitian':'audio/18/words/18-03xingqitian.mp3',
+  '18-shengdanjie':'audio/18/words/18-03shengdanjie.mp3',
+  '18-xingqier':'audio/18/words/18-03xingqier.mp3',
+
+  '18-s1':'audio/18/text/18-02-01.mp3',
+  '18-s2':'audio/18/text/18-02-02.mp3',
+  '18-s3':'audio/18/text/18-02-03.mp3',
+  '18-s4':'audio/18/text/18-02-04.mp3',
+  '18-s5':'audio/18/text/18-02-05.mp3',
+  '18-s6':'audio/18/text/18-02-06.mp3',
+  '18-s7':'audio/18/text/18-02-07.mp3',
+  '18-s8':'audio/18/text/18-02-08.mp3',
+  '18-s9':'audio/18/text/18-02-09.mp3',
+  '18-s10':'audio/18/text/18-02-10.mp3',
+  '18-s11':'audio/18/text/18-02-11.mp3',
+  '18-s12':'audio/18/text/18-02-12.mp3',
+
+  '19-yao':'audio/19/words/19-02yao.mp3',
+  '19-wan':'audio/19/words/19-02wan.mp3',
+  '19-miantiaoer':'audio/19/words/19-02miantiaor.mp3',
+  '19-da':'audio/19/words/19-02da.mp3',
+  '19-haishi':'audio/19/words/19-02haishi.mp3',
+  '19-xiao':'audio/19/words/19-02xiao.mp3',
+  '19-la':'audio/19/words/19-02la.mp3',
+  '19-zai':'audio/19/words/19-02zai.mp3',
+  '19-bei':'audio/19/words/19-02bei.mp3',
+  '19-doujiang':'audio/19/words/19-02doujiang.mp3',
+  '19-re':'audio/19/words/19-02re.mp3',
+  '19-liang':'audio/19/words/19-02liang.mp3',
+  '19-yigong':'audio/19/words/19-02yigong.mp3',
+  '19-kuai':'audio/19/words/19-02kuai.mp3',
+  '19-xianjin':'audio/19/words/19-02xianjin.mp3',
+  '19-shuaka':'audio/19/words/19-02shuaka.mp3',
+
+  '19-s1':'audio/19/text/19-01-01.mp3',
+  '19-s2':'audio/19/text/19-01-02.mp3',
+  '19-s3':'audio/19/text/19-01-03.mp3',
+  '19-s4':'audio/19/text/19-01-04.mp3',
+  '19-s5':'audio/19/text/19-01-05.mp3',
+  '19-s6':'audio/19/text/19-01-06.mp3',
+  '19-s7':'audio/19/text/19-01-07.mp3',
+  '19-s8':'audio/19/text/19-01-08.mp3',
+  '19-s9':'audio/19/text/19-01-09.mp3',
+  '19-s10':'audio/19/text/19-01-10.mp3',
+  '19-s11':'audio/19/text/19-01-11.mp3',
+
+  '20-hanbao':'audio/20/words/20-03hanbao.mp3',
+  '20-bisabing':'audio/20/words/20-03bisabing.mp3',
+  '20-shui':'audio/20/words/20-03shui.mp3',
+  '20-tian':'audio/20/words/20-03tian.mp3',
+  '20-xian':'audio/20/words/20-03xian.mp3',
+  '20-jin':'audio/20/words/20-03jin.mp3',
+  '20-jiaozi':'audio/20/words/20-03jiaozi.mp3',
+  '20-yangrou':'audio/20/words/20-03yangrou.mp3',
+  '20-niurou':'audio/20/words/20-03niurou.mp3',
+  '20-mifan':'audio/20/words/20-03mifan.mp3',
+  '20-kafei':'audio/20/words/20-03kafei.mp3',
+  '20-ping':'audio/20/words/20-03ping.mp3',
+  '20-kele':'audio/20/words/20-03kele.mp3',
+
+  '20-s1':'audio/20/text/20-02-01.mp3',
+  '20-s2':'audio/20/text/20-02-02.mp3',
+  '20-s3':'audio/20/text/20-02-03.mp3',
+  '20-s4':'audio/20/text/20-02-04.mp3',
+  '20-s5':'audio/20/text/20-02-05.mp3',
+  '20-s6':'audio/20/text/20-02-06.mp3',
+  '20-s7':'audio/20/text/20-02-07.mp3',
+  '20-s8':'audio/20/text/20-02-08.mp3',
+  '20-s9':'audio/20/text/20-02-09.mp3',
+  '20-s10':'audio/20/text/20-02-10.mp3',
+  '20-s11':'audio/20/text/20-02-11.mp3',
+  '20-s12':'audio/20/text/20-02-12.mp3',
+  '20-s13':'audio/20/text/20-02-13.mp3',
+  '20-s14':'audio/20/text/20-02-14.mp3',
+  '20-s15':'audio/20/text/20-02-15.mp3',
+  '20-s16':'audio/20/text/20-02-16.mp3',
+  '20-s17':'audio/20/text/20-02-17.mp3',
+  '20-s18':'audio/20/text/20-02-18.mp3',
+  '20-s19':'audio/20/text/20-02-19.mp3',
+  '20-s20':'audio/20/text/20-02-20.mp3',
+  '20-s21':'audio/20/text/20-02-21.mp3',
+  '20-s22':'audio/20/text/20-02-22.mp3',
+  '20-s23':'audio/20/text/20-02-23.mp3',
+  '20-s24':'audio/20/text/20-02-24.mp3',
+  '20-s25':'audio/20/text/20-02-25.mp3',
+  '20-s26':'audio/20/text/20-02-26.mp3',
+  '20-s27':'audio/20/text/20-02-27.mp3',
+  '20-s28':'audio/20/text/20-02-28.mp3',
+  '20-s29':'audio/20/text/20-02-29.mp3',
+  '20-s30':'audio/20/text/20-02-30.mp3',
+  '20-s31':'audio/20/text/20-02-31.mp3',
+  '20-s32':'audio/20/text/20-02-32.mp3',
+  '20-s33':'audio/20/text/20-02-33.mp3',
+  '20-s34':'audio/20/text/20-02-34.mp3',
+  '20-s35':'audio/20/text/20-02-35.mp3',
+  '20-s36':'audio/20/text/20-02-36.mp3'
+};
+/*AUDIO_END*/
+</script>
+
+<script>
+/* =====================================================================
+   선생님 수정 구역 / TEACHER EDIT ZONE
+   - 11~20과는 빈 칸(draft)만 만들어 둔 상태입니다. 본문(sentences)·단어(vocab)·퀴즈(quiz)를 채우면 활성화됩니다.
+   - 문답처럼 두 줄짜리는 각각 문장으로 분리해서 제공
+   - threshold: 자동 점수 통과 기준(%) / 초급은 낮게, 중급은 높게(이 기능은 나중 확인 후 기능 삭제)
+   ===================================================================== */
+const LESSONS = [];
+
+/* 11~20과 빈 칸: 본문(sentences)·단어(vocab)·퀴즈(quiz)를 채우면 자동으로 활성화됩니다. (문화는 이 앱에서 다루지 않습니다) */
+for(let n=11;n<=20;n++){
+ LESSONS.splice(n-11,0,{id:'l'+n, title:n+'과', level:'', threshold:60, draft:true,
+    sentences:[], vocab:[], quiz:[]});
+}
+
+
+/* 11과: au = 원어민 MP3 id(AUDIO 안). 없으면 폰 TTS로 재생됩니다. */
+Object.assign(LESSONS.find(l=>l.id==='l11'),{draft:false, 
+sentences:[
+
+  {zh:'我叫王芳芳。', py:'Wǒ jiào Wáng Fāngfang.', ko:'제 이름은 왕팡팡입니다.', en:'My name is Wang Fangfang.', vi:'Tên tôi là Vương Phương Phương.', mn:'Миний нэр Ван Фан Фан.', ja:'私は王芳芳といいます。', au:'11-s1'},
+  {zh:'我爸爸是经理，他很忙。', py:'Wǒ bàba shì jīnglǐ, tā hěn máng.', ko:'우리 아빠는 매니저이고, 매우 바쁩니다.', en:'My dad is a manager. He is very busy.', vi:'Bố tôi là quản lý, ông ấy rất bận.', mn:'Миний аав менежер, тэр маш завгүй.', ja:'父はマネージャーで、とても忙しいです。', au:'11-s2'},
+  {zh:'我妈妈是家庭主妇，她很漂亮。', py:'Wǒ māma shì jiātíng zhǔfù, tā hěn piàoliang.', ko:'우리 엄마는 가정주부이고, 매우 예쁩니다.', en:'My mom is a housewife. She is very pretty.', vi:'Mẹ tôi là nội trợ, bà ấy rất đẹp.', mn:'Миний ээж гэрийн эзэгтэй, тэр маш үзэсгэлэнтэй.', ja:'母は専業主婦で、とてもきれいです。', au:'11-s3'},
+  {zh:'她有很多漂亮的衣服。', py:'Tā yǒu hěn duō piàoliang de yīfu.', ko:'엄마는 예쁜 옷이 많습니다.', en:'She has a lot of pretty clothes.', vi:'Bà ấy có rất nhiều quần áo đẹp.', mn:'Тэр маш олон үзэсгэлэнтэй хувцастай.', ja:'母はきれいな服をたくさん持っています。', au:'11-s4'},
+  {zh:'我没有哥哥，有一个姐姐。', py:'Wǒ méiyǒu gēge, yǒu yí ge jiějie.', ko:'저는 오빠는 없고, 언니가 한 명 있습니다.', en:"I don't have an older brother, but I have one older sister.", vi:'Tôi không có anh trai, tôi có một chị gái.', mn:'Надад ах байхгүй, нэг эгч бий.', ja:'私には兄はいませんが、姉が一人います。', au:'11-s5'},
+  {zh:'我姐姐有男朋友，他喜欢约会。', py:'Wǒ jiějie yǒu nánpéngyou, tā xǐhuan yuēhuì.', ko:'제 언니는 남자친구가 있고, 그는 데이트를 좋아합니다.', en:'My sister has a boyfriend, and he likes going on dates.', vi:'Chị gái tôi có bạn trai, anh ấy thích hẹn hò.', mn:'Миний эгч найз залуутай, тэр болзох дуртай.', ja:'姉には彼氏がいて、彼はデートが好きです。', au:'11-s6'},
+  {zh:'我没有男朋友，我喜欢上网。', py:'Wǒ méiyǒu nánpéngyou, wǒ xǐhuan shàngwǎng.', ko:'저는 남자친구가 없고, 인터넷 하는 것을 좋아합니다.', en:"I don't have a boyfriend. I like going online.", vi:'Tôi không có bạn trai, tôi thích lên mạng.', mn:'Надад найз залуу байхгүй, би интернэтээр орох дуртай.', ja:'私には彼氏がいません。ネットが好きです。', au:'11-s7'}
+], 
+
+quiz:[
+  {q:'왕팡팡의 아버지는 어떤 분인가요?', o:['매니저이고 바쁘다','가정주부이다','학생이다'], a:0},
+  {q:'왕팡팡의 형제자매는?', o:['오빠 한 명','언니 한 명','없다'], a:1},
+  {q:'왕팡팡이 좋아하는 것은?', o:['데이트','옷 사기','인터넷(上网)'], a:2}
+], 
+
+vocab:[
+  {zh:'爸爸', py:'bàba', ko:'아빠', en:'dad', vi:'bố', mn:'аав', ja:'お父さん', au:'11-baba'},
+  {zh:'妈妈', py:'māma', ko:'엄마', en:'mom', vi:'mẹ', mn:'ээж', ja:'お母さん', au:'11-mama'},
+  {zh:'哥哥', py:'gēge', ko:'형, 오빠', en:'older brother', vi:'anh trai', mn:'ах', ja:'お兄さん', au:'11-gege'},
+  {zh:'姐姐', py:'jiějie', ko:'누나, 언니', en:'older sister', vi:'chị gái', mn:'эгч', ja:'お姉さん', au:'11-jiejie'},
+  {zh:'男朋友', py:'nánpéngyou', ko:'남자친구', en:'boyfriend', vi:'bạn trai', mn:'найз залуу', ja:'彼氏', au:'11-nanpengyou'},
+  {zh:'有', py:'yǒu', ko:'가지고 있다', en:'to have', vi:'có', mn:'байх (хэнд … байна)', ja:'持っている', au:'11-you'},
+  {zh:'没有', py:'méiyǒu', ko:'없다', en:"to not have", vi:'không có', mn:'байхгүй', ja:'ない・いない', au:'11-meiyou'},
+  {zh:'一', py:'yī', ko:'하나', en:'one', vi:'một', mn:'нэг', ja:'一つ', au:'11-yi'},
+  {zh:'个', py:'gè', ko:'개, 명(사물, 사람을 세는 단위)', en:'general measure word for things and people', vi:'cái, người (lượng từ chung cho đồ vật và người)', mn:'ширхэг, хүн (эд зүйл, хүнийг тоолох нэгж үг)', ja:'〜個、〜人（物や人を数える量詞）', au:'11-ge'},
+  {zh:'多', py:'duō', ko:'많다', en:'many, much', vi:'nhiều', mn:'олон', ja:'多い', au:'11-duo'},
+  {zh:'漂亮', py:'piàoliang', ko:'예쁘다', en:'pretty', vi:'đẹp', mn:'үзэсгэлэнтэй', ja:'きれい', au:'11-piaoliang'},
+  {zh:'衣服', py:'yīfu', ko:'옷', en:'clothes', vi:'quần áo', mn:'хувцас', ja:'服', au:'11-yifu'},
+  {zh:'约会', py:'yuēhuì', ko:'데이트하다, 약속하여 만나다', en:'to date; to meet by arrangement', vi:'hẹn hò, hẹn gặp', mn:'болзох, цаг товлон уулзах', ja:'デートする、会う約束をする', au:'11-yuehui'}
+
+]});
+
+/* 12과: 본문 8문답, 문답을 분리해서 총 16문장으로 구성 */
+Object.assign(LESSONS.find(l=>l.id==='l12'),{draft:false, 
+sentences:[
+
+  {zh: "他有弟弟吗？",  py: "Tā yǒu dìdi ma?",  ko: "그는 남동생이 있어요?",  en: "Does he have a younger brother?",  vi: "Anh ấy có em trai không?",  mn: "Тэр дүү хүүтэй юу?",  ja: "彼には弟がいますか？",  au: "12-s1"},
+  {zh: "他有弟弟。",  py: "Tā yǒu dìdi.",  ko: "그는 남동생이 있어요.",  en: "He has a younger brother.",  vi: "Anh ấy có em trai.",  mn: "Тэр дүү хүүтэй.",  ja: "彼には弟がいます。",  au: "12-s2"},
+  {zh: "他有几个弟弟？",  py: "Tā yǒu jǐ ge dìdi?",  ko: "그는 남동생이 몇 명 있어요?",  en: "How many younger brothers does he have?",  vi: "Anh ấy có mấy em trai?",  mn: "Тэр хэдэн дүү хүүтэй вэ?",  ja: "彼には弟が何人いますか？",  au: "12-s3"},
+  {zh: "他有一个弟弟。",  py: "Tā yǒu yí ge dìdi.",  ko: "그는 남동생이 한 명 있어요.",  en: "He has one younger brother.",  vi: "Anh ấy có một em trai.",  mn: "Тэр нэг дүү хүүтэй.",  ja: "彼には弟が一人います。",  au: "12-s4"},
+  {zh: "他有没有妹妹？",  py: "Tā yǒu méiyǒu mèimei?",  ko: "그는 여동생이 있어요, 없어요?",  en: "Does he have a younger sister?",  vi: "Anh ấy có em gái không?",  mn: "Тэр дүү охинтой юу?",  ja: "彼には妹がいますか？",  au: "12-s5"},
+  {zh: "他有妹妹。",  py: "Tā yǒu mèimei.",  ko: "그는 여동생이 있어요.",  en: "He has a younger sister.",  vi: "Anh ấy có em gái.",  mn: "Тэр дүү охинтой.",  ja: "彼には妹がいます。",  au: "12-s6"},
+  {zh: "他有几个妹妹？",  py: "Tā yǒu jǐ ge mèimei?",  ko: "그는 여동생이 몇 명 있어요?",  en: "How many younger sisters does he have?",  vi: "Anh ấy có mấy em gái?",  mn: "Тэр хэдэн дүү охинтой вэ?",  ja: "彼には妹が何人いますか？",  au: "12-s7"},
+  {zh: "他有两个妹妹。",  py: "Tā yǒu liǎng ge mèimei.",  ko: "그는 여동생이 두 명 있어요.",  en: "He has two younger sisters.",  vi: "Anh ấy có hai em gái.",  mn: "Тэр хоёр дүү охинтой.",  ja: "彼には妹が二人います。",  au: "12-s8"},
+  {zh: "她有没有哥哥？",  py: "Tā yǒu méiyǒu gēge?",  ko: "그녀는 오빠가 있어요, 없어요?",  en: "Does she have an older brother?",  vi: "Cô ấy có anh trai không?",  mn: "Тэр ахтай юу?",  ja: "彼女には兄がいますか？",  au: "12-s9"},
+  {zh: "她没有哥哥。",  py: "Tā méiyǒu gēge.",  ko: "그녀는 오빠가 없어요.",  en: "She does not have an older brother.",  vi: "Cô ấy không có anh trai.",  mn: "Тэр ахгүй.",  ja: "彼女には兄がいません。",  au: "12-s10"},
+  {zh: "她姐姐有没有男朋友？",  py: "Tā jiějie yǒu méiyǒu nánpéngyou?",  ko: "그녀의 언니는 남자친구가 있어요, 없어요?",  en: "Does her older sister have a boyfriend?",  vi: "Chị gái cô ấy có bạn trai không?",  mn: "Түүний эгч найз залуутай юу?",  ja: "彼女のお姉さんには彼氏がいますか？",  au: "12-s11"},
+  {zh: "她姐姐没有男朋友。",  py: "Tā jiějie méiyǒu nánpéngyou.",  ko: "그녀의 언니는 남자친구가 없어요.",  en: "Her older sister does not have a boyfriend.",  vi: "Chị gái cô ấy không có bạn trai.",  mn: "Түүний эгч найз залуугүй.",  ja: "彼女のお姉さんには彼氏がいません。",  au: "12-s12"},
+  {zh: "他家有几口人？",  py: "Tā jiā yǒu jǐ kǒu rén?",  ko: "그의 가족은 몇 명이에요?",  en: "How many people are in his family?",  vi: "Gia đình anh ấy có mấy người?",  mn: "Түүний гэр бүлд хэдэн хүн байдаг вэ?",  ja: "彼の家は何人家族ですか？",  au: "12-s13"},
+  {zh: "他家有五口人。",  py: "Tā jiā yǒu wǔ kǒu rén.",  ko: "그의 가족은 다섯 명이에요.",  en: "There are five people in his family.",  vi: "Gia đình anh ấy có năm người.",  mn: "Түүний гэр бүлд таван хүн бий.",  ja: "彼の家は五人家族です。",  au: "12-s14"},
+  {zh: "她家有几口人？",  py: "Tā jiā yǒu jǐ kǒu rén?",  ko: "그녀의 가족은 몇 명이에요?",  en: "How many people are in her family?",  vi: "Gia đình cô ấy có mấy người?",  mn: "Түүний гэр бүлд хэдэн хүн байдаг вэ?",  ja: "彼女の家は何人家族ですか？",  au: "12-s15"},
+  {zh: "她家有三口人。",  py: "Tā jiā yǒu sān kǒu rén.",  ko: "그녀의 가족은 세 명이에요.",  en: "There are three people in her family.",  vi: "Gia đình cô ấy có ba người.",  mn: "Түүний гэр бүлд гурван хүн бий.",  ja: "彼女の家は三人家族です。",  au: "12-s16"}
+], 
+
+quiz:[
+  {q:'“弟弟”의 뜻은?', o:['여동생', '남동생','형'], a:1},
+  {q:'“几”는 어떤 때 쓰나요?', o:['수가 몇인지 물을 때','있는지 없는지 물을 때','이름을 물을 때'], a:0},
+  {q:'“五口人”에서 “口”는 무엇을 세는 말인가요?', o:['방','책','가족의 사람 수'], a:2}
+], 
+
+vocab:[
+ {zh: '弟弟',  py: 'dìdi',  ko: '남동생',  en: 'younger brother',  vi: 'em trai',  mn: 'дүү хүү',  ja: '弟',  au: '12-didi'},
+ {zh: '妹妹',  py: 'mèimei',  ko: '여동생',  en: 'younger sister',  vi: 'em gái',  mn: 'дүү охин',  ja: '妹',  au: '12-meimei'},
+ {zh: '几',  py: 'jǐ',  ko: '몇',  en: 'how many',  vi: 'mấy',  mn: 'хэд',  ja: 'いくつ',  au: '12-ji'},
+ {zh: '家',  py: 'jiā',  ko: '가정, 집안',  en: 'family, household',  vi: 'gia đình, nhà',  mn: 'гэр бүл, гэр',  ja: '家庭、家',  au: '12-jia'},
+ {zh: '口',  py: 'kǒu',  ko: '식구, 마리(사람, 가축을 세는 단위)',  en: 'family member; measure word for people and livestock',  vi: 'khẩu (lượng từ đếm người trong gia đình và gia súc)',  mn: 'гэр бүлийн гишүүн; хүн, малыг тоолох нэгж үг',  ja: '家族の人数；人や家畜を数える助数詞',  au: '12-kou'},
+ {zh: '两',  py: 'liǎng',  ko: '둘',  en: 'two',  vi: 'hai',  mn: 'хоёр',  ja: '二つ',  au: '12-liang'},
+ {zh: '三',  py: 'sān',  ko: '3, 셋',  en: '3, three',  vi: '3, ba',  mn: '3, гурав',  ja: '3、三つ',  au: '12-san'},
+ {zh: '五',  py: 'wǔ',  ko: '5, 다섯',  en: '5, five',  vi: '5, năm',  mn: '5, тав',  ja: '5、五つ',  au: '12-wu'}
+]
+});
+
+/* 13과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l13'),{draft:false, 
+sentences:[
+
+{zh:"我的钥匙在哪儿？", py:"Wǒ de yàoshi zài nǎr?", ko:"내 열쇠는 어디에 있어요?", en:"Where is my key?", vi:"Chìa khóa của tôi ở đâu?", mn:"Миний түлхүүр хаана байна?", ja:"私の鍵はどこですか？", au:"13-s1"},
+{zh:"钥匙在桌子上。", py:"Yàoshi zài zhuōzi shang.", ko:"열쇠는 탁자 위에 있어요.", en:"The key is on the table.", vi:"Chìa khóa ở trên bàn.", mn:"Түлхүүр ширээн дээр байна.", ja:"鍵はテーブルの上にあります。", au:"13-s2"},
+{zh:"钥匙不在桌子上。", py:"Yàoshi bú zài zhuōzi shang.", ko:"열쇠는 탁자 위에 없어요.", en:"The key is not on the table.", vi:"Chìa khóa không ở trên bàn.", mn:"Түлхүүр ширээн дээр байхгүй.", ja:"鍵はテーブルの上にありません。", au:"13-s3"},
+{zh:"钥匙在不在沙发上？", py:"Yàoshi zài bu zài shāfā shang?", ko:"열쇠는 소파 위에 있어요, 없어요?", en:"Is the key on the sofa?", vi:"Chìa khóa có ở trên ghế sofa không?", mn:"Түлхүүр буйдан дээр байна уу?", ja:"鍵はソファの上にありますか？", au:"13-s4"},
+{zh:"不在沙发上。", py:"Bú zài shāfā shang.", ko:"소파 위에 없어요.", en:"It is not on the sofa.", vi:"Không ở trên ghế sofa.", mn:"Буйдан дээр байхгүй.", ja:"ソファの上にはありません。", au:"13-s5"},
+{zh:"在不在沙发下边？", py:"Zài bu zài shāfā xiàbian?", ko:"소파 아래에 있어요, 없어요?", en:"Is it under the sofa?", vi:"Có ở dưới ghế sofa không?", mn:"Буйданы доор байна уу?", ja:"ソファの下にありますか？", au:"13-s6"},
+{zh:"也不在沙发下边。", py:"Yě bú zài shāfā xiàbian.", ko:"소파 아래에도 없어요.", en:"It is not under the sofa either.", vi:"Cũng không ở dưới ghế sofa.", mn:"Буйданы доор ч бас байхгүй.", ja:"ソファの下にもありません。", au:"13-s7"},
+{zh:"在不在电话旁边？", py:"Zài bu zài diànhuà pángbiān?", ko:"전화 옆에 있어요, 없어요?", en:"Is it next to the phone?", vi:"Có ở bên cạnh điện thoại không?", mn:"Утасны хажууд байна уу?", ja:"電話の隣にありますか？", au:"13-s8"},
+{zh:"不在电话旁边。", py:"Bú zài diànhuà pángbiān.", ko:"전화 옆에 없어요.", en:"It is not next to the phone.", vi:"Không ở bên cạnh điện thoại.", mn:"Утасны хажууд байхгүй.", ja:"電話の隣にはありません。", au:"13-s9"},
+{zh:"你手里是什么？", py:"Nǐ shǒu li shì shénme?", ko:"당신 손에 있는 게 뭐예요?", en:"What is in your hand?", vi:"Trong tay bạn là cái gì?", mn:"Чиний гарт юу байна?", ja:"あなたの手の中にあるのは何ですか？", au:"13-s10"}], 
+
+vocab:[
+{zh:"丈夫", py:"zhàngfu", ko:"남편", en:"husband", vi:"chồng", mn:"нөхөр", ja:"夫", au:"13-zhangfu"},
+{zh:"钥匙", py:"yàoshi", ko:"열쇠", en:"key", vi:"chìa khóa", mn:"түлхүүр", ja:"鍵", au:"13-yaoshi"},
+{zh:"在", py:"zài", ko:"~에 있다", en:"to be (located) at/in", vi:"ở, tại", mn:"байх (байрлах)", ja:"〜にある・いる", au:"13-zai"},
+{zh:"哪儿", py:"nǎr", ko:"어디", en:"where", vi:"đâu, ở đâu", mn:"хаана", ja:"どこ", au:"13-nar"},
+{zh:"妻子", py:"qīzi", ko:"아내", en:"wife", vi:"vợ", mn:"эхнэр", ja:"妻", au:"13-qizi"},
+{zh:"桌子", py:"zhuōzi", ko:"탁자, 책상", en:"table, desk", vi:"bàn", mn:"ширээ", ja:"テーブル、机", au:"13-zhuozi"},
+{zh:"上", py:"shàng", ko:"위", en:"on, above", vi:"trên", mn:"дээр", ja:"上", au:"13-shang"},
+{zh:"沙发", py:"shāfā", ko:"소파", en:"sofa", vi:"ghế sofa", mn:"буйдан", ja:"ソファ", au:"13-shafa"},
+{zh:"下边", py:"xiàbian", ko:"아래", en:"below, under", vi:"dưới", mn:"доор", ja:"下", au:"13-xiabian"},
+{zh:"电话", py:"diànhuà", ko:"전화", en:"telephone", vi:"điện thoại", mn:"утас", ja:"電話", au:"13-dianhua"},
+{zh:"旁边", py:"pángbiān", ko:"옆", en:"beside, next to", vi:"bên cạnh", mn:"хажуу", ja:"そば、隣", au:"13-pangbian"},
+{zh:"手", py:"shǒu", ko:"손", en:"hand", vi:"tay", mn:"гар", ja:"手", au:"13-shou"},
+{zh:"里", py:"lǐ", ko:"안, 속", en:"in, inside", vi:"trong", mn:"дотор", ja:"中", au:"13-li"}
+],
+
+quiz:[
+  {q:'“哪儿”의 뜻은?', o:['여기', '저기','어디'], a:2},
+  {q:'“在”의 품사는?', o:['명사','형용사','동사'], a:2},
+  {q:'방향·위치와 관련 없는 단어는?', o:['手','旁边','下边'], a:0}
+], 
+
+});
+
+/* 14과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l14'),{draft:false, 
+
+sentences:[
+{zh:"餐桌在哪儿?", py:"Cānzhuō zài nǎr?", ko:"식탁은 어디에 있어요?", en:"Where is the dining table?", vi:"Bàn ăn ở đâu?", mn:"Хоолны ширээ хаана байна?", ja:"ダイニングテーブルはどこですか？", au:"14-s1"},
+{zh:"餐桌在沙发前边。", py:"Cānzhuō zài shāfā qiánbian.", ko:"식탁은 소파 앞에 있어요.", en:"The dining table is in front of the sofa.", vi:"Bàn ăn ở phía trước ghế sofa.", mn:"Хоолны ширээ буйданы өмнө байна.", ja:"ダイニングテーブルはソファの前にあります。", au:"14-s2"},
+{zh:"书柜在哪儿?", py:"Shūguì zài nǎr?", ko:"책장은 어디에 있어요?", en:"Where is the bookcase?", vi:"Tủ sách ở đâu?", mn:"Номын шкаф хаана байна?", ja:"本棚はどこですか？", au:"14-s3"},
+{zh:"书柜在沙发后边。", py:"Shūguì zài shāfā hòubian.", ko:"책장은 소파 뒤에 있어요.", en:"The bookcase is behind the sofa.", vi:"Tủ sách ở phía sau ghế sofa.", mn:"Номын шкаф буйданы ард байна.", ja:"本棚はソファの後ろにあります。", au:"14-s4"},
+{zh:"桌子在哪儿?", py:"Zhuōzi zài nǎr?", ko:"탁자는 어디에 있어요?", en:"Where is the table?", vi:"Cái bàn ở đâu?", mn:"Ширээ хаана байна?", ja:"テーブルはどこですか？", au:"14-s5"},
+{zh:"桌子在书柜左边。", py:"Zhuōzi zài shūguì zuǒbian.", ko:"탁자는 책장 왼쪽에 있어요.", en:"The table is to the left of the bookcase.", vi:"Cái bàn ở bên trái tủ sách.", mn:"Ширээ номын шкафны зүүн талд байна.", ja:"テーブルは本棚の左側にあります。", au:"14-s6"},{zh:"电话在哪儿?", py:"Diànhuà zài nǎr?", ko:"전화는 어디에 있어요?", en:"Where is the phone?", vi:"Điện thoại ở đâu?", mn:"Утас хаана байна?", ja:"電話はどこですか？", au:"14-s7"},
+{zh:"电话在电脑右边。", py:"Diànhuà zài diànnǎo yòubian.", ko:"전화는 컴퓨터 오른쪽에 있어요.", en:"The phone is to the right of the computer.", vi:"Điện thoại ở bên phải máy tính.", mn:"Утас компьютерийн баруун талд байна.", ja:"電話はパソコンの右側にあります。", au:"14-s8"},
+{zh:"茶在桌子上吗?", py:"Chá zài zhuōzi shang ma?", ko:"차는 탁자 위에 있어요?", en:"Is the tea on the table?", vi:"Trà có ở trên bàn không?", mn:"Цай ширээн дээр байна уу?", ja:"お茶はテーブルの上にありますか？", au:"14-s9"},{zh:"茶在桌子上。", py:"Chá zài zhuōzi shang.", ko:"차는 탁자 위에 있어요.", en:"The tea is on the table.", vi:"Trà ở trên bàn.", mn:"Цай ширээн дээр байна.", ja:"お茶はテーブルの上にあります。", au:"14-s10"},
+{zh:"篮球在椅子下边吗?", py:"Lánqiú zài yǐzi xiàbian ma?", ko:"농구공은 의자 아래에 있어요?", en:"Is the basketball under the chair?", vi:"Quả bóng rổ có ở dưới ghế không?", mn:"Сагсан бөмбөг сандлын доор байна уу?", ja:"バスケットボールは椅子の下にありますか？", au:"14-s11"},
+{zh:"篮球在椅子下边。", py:"Lánqiú zài yǐzi xiàbian.", ko:"농구공은 의자 아래에 있어요.", en:"The basketball is under the chair.", vi:"Quả bóng rổ ở dưới ghế.", mn:"Сагсан бөмбөг сандлын доор байна.", ja:"バスケットボールは椅子の下にあります。", au:"14-s12"},
+{zh:"妈妈的衣服在衣柜里吗?", py:"Māma de yīfu zài yīguì li ma?", ko:"엄마의 옷은 옷장 안에 있어요?", en:"Are Mom's clothes in the wardrobe?", vi:"Quần áo của mẹ có ở trong tủ quần áo không?", mn:"Ээжийн хувцас хувцасны шкафанд байна уу?", ja:"お母さんの服はクローゼットの中にありますか？", au:"14-s13"},
+{zh:"妈妈的衣服在衣柜里。", py:"Māma de yīfu zài yīguì li.", ko:"엄마의 옷은 옷장 안에 있어요.", en:"Mom's clothes are in the wardrobe.", vi:"Quần áo của mẹ ở trong tủ quần áo.", mn:"Ээжийн хувцас хувцасны шкафанд байна.", ja:"お母さんの服はクローゼットの中にあります。", au:"14-s14"},
+{zh:"报纸在不在电脑旁边?", py:"Bàozhǐ zài bu zài diànnǎo pángbiān?", ko:"신문은 컴퓨터 옆에 있어요, 없어요?", en:"Is the newspaper next to the computer?", vi:"Tờ báo có ở bên cạnh máy tính không?", mn:"Сонин компьютерийн хажууд байна уу?", ja:"新聞はパソコンの隣にありますか？", au:"14-s15"},
+{zh:"报纸在电脑旁边。", py:"Bàozhǐ zài diànnǎo pángbiān.", ko:"신문은 컴퓨터 옆에 있어요.", en:"The newspaper is next to the computer.", vi:"Tờ báo ở bên cạnh máy tính.", mn:"Сонин компьютерийн хажууд байна.", ja:"新聞はパソコンの隣にあります。", au:"14-s16"},
+{zh:"她的书在不在桌子上?", py:"Tā de shū zài bu zài zhuōzi shang?", ko:"그녀의 책은 탁자 위에 있어요, 없어요?", en:"Is her book on the table?", vi:"Sách của cô ấy có ở trên bàn không?", mn:"Түүний ном ширээн дээр байна уу?", ja:"彼女の本はテーブルの上にありますか？", au:"14-s17"},
+{zh:"她的书在桌子上。", py:"Tā de shū zài zhuōzi shang.", ko:"그녀의 책은 탁자 위에 있어요.", en:"Her book is on the table.", vi:"Sách của cô ấy ở trên bàn.", mn:"Түүний ном ширээн дээр байна.", ja:"彼女の本はテーブルの上にあります。", au:"14-s18"}], 
+
+vocab:[
+{zh:"餐桌", py:"cānzhuō", ko:"식탁", en:"dining table", vi:"bàn ăn", mn:"хоолны ширээ", ja:"ダイニングテーブル", au:"14-canzhuo"},
+{zh:"前边", py:"qiánbian", ko:"앞", en:"front, in front", vi:"phía trước", mn:"өмнө тал", ja:"前", au:"14-qianbian"},
+{zh:"书柜", py:"shūguì", ko:"책장", en:"bookcase", vi:"tủ sách", mn:"номын шкаф", ja:"本棚", au:"14-shugui"},
+{zh:"后边", py:"hòubian", ko:"뒤", en:"back, behind", vi:"phía sau", mn:"ард тал", ja:"後ろ", au:"14-houbian"},
+{zh:"左边", py:"zuǒbian", ko:"왼쪽", en:"left", vi:"bên trái", mn:"зүүн тал", ja:"左", au:"14-zuobian"},
+{zh:"电脑", py:"diànnǎo", ko:"컴퓨터", en:"computer", vi:"máy tính", mn:"компьютер", ja:"パソコン", au:"14-diannao"},
+{zh:"右边", py:"yòubian", ko:"오른쪽", en:"right", vi:"bên phải", mn:"баруун тал", ja:"右", au:"14-youbian"},
+{zh:"椅子", py:"yǐzi", ko:"의자", en:"chair", vi:"ghế", mn:"сандал", ja:"椅子", au:"14-yizi"},
+{zh:"衣柜", py:"yīguì", ko:"옷장", en:"wardrobe", vi:"tủ quần áo", mn:"хувцасны шкаф", ja:"クローゼット、衣装だんす", au:"14-yigui"}], 
+
+quiz:[
+  {q:"“餐桌”의 뜻은?", o:["책장", "의자", "식탁"], a:2},
+  {q:"“后边”의 뜻은?", o:["앞", "뒤", "오른쪽"], a:1},
+  {q:"“书柜在沙发后边。”의 뜻은?", o:["책장은 소파 뒤에 있어요", "책장은 소파 앞에 있어요", "책장은 소파 왼쪽에 있어요"], a:0}
+]});
+
+/* 15과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l15'),{draft:false, 
+
+sentences:[
+{zh:"这条红色的裙子好看吗？", py:"Zhè tiáo hóngsè de qúnzi hǎokàn ma?", ko:"이 빨간색 치마 예뻐요?", en:"Does this red skirt look nice?", vi:"Chiếc váy màu đỏ này có đẹp không?", mn:"Энэ улаан банзал гоё юу?", ja:"この赤いスカートは素敵ですか？", au:"15-s1"},
+{zh:"好看。", py:"Hǎokàn.", ko:"예뻐요.", en:"It looks nice.", vi:"Đẹp.", mn:"Гоё байна.", ja:"素敵です。", au:"15-s2"},
+{zh:"这条白色的裙子好看吗？", py:"Zhè tiáo báisè de qúnzi hǎokàn ma?", ko:"이 흰색 치마 예뻐요?", en:"Does this white skirt look nice?", vi:"Chiếc váy màu trắng này có đẹp không?", mn:"Энэ цагаан банзал гоё юу?", ja:"この白いスカートは素敵ですか？", au:"15-s3"},
+{zh:"好看。", py:"Hǎokàn.", ko:"예뻐요.", en:"It looks nice.", vi:"Đẹp.", mn:"Гоё байна.", ja:"素敵です。", au:"15-s4"},
+{zh:"这条黄色的裙子呢？", py:"Zhè tiáo huángsè de qúnzi ne?", ko:"이 노란색 치마는요?", en:"What about this yellow skirt?", vi:"Còn chiếc váy màu vàng này thì sao?", mn:"Энэ шар банзал яах вэ?", ja:"この黄色いスカートはどうですか？", au:"15-s5"},
+{zh:"好看。", py:"Hǎokàn.", ko:"예뻐요.", en:"It looks nice.", vi:"Đẹp.", mn:"Гоё байна.", ja:"素敵です。", au:"15-s6"},
+{zh:"这条绿色的大衣怎么样？", py:"Zhè tiáo lǜsè de dàyī zěnmeyàng?", ko:"이 녹색 외투는 어때요?", en:"How about this green coat?", vi:"Chiếc áo khoác màu xanh lá này thế nào?", mn:"Энэ ногоон пальто ямар вэ?", ja:"この緑のコートはどうですか？", au:"15-s7"},
+{zh:"好看。", py:"Hǎokàn.", ko:"예뻐요.", en:"It looks nice.", vi:"Đẹp.", mn:"Гоё байна.", ja:"素敵です。", au:"15-s8"},
+{zh:"这条蓝色的大衣呢？", py:"Zhè tiáo lánsè de dàyī ne?", ko:"이 파란색 외투는요?", en:"What about this blue coat?", vi:"Còn chiếc áo khoác màu xanh dương này thì sao?", mn:"Энэ цэнхэр пальто яах вэ?", ja:"この青いコートはどうですか？", au:"15-s9"},
+{zh:"好看。", py:"Hǎokàn.", ko:"예뻐요.", en:"It looks nice.", vi:"Đẹp.", mn:"Гоё байна.", ja:"素敵です。", au:"15-s10"},
+{zh:"你看没看？", py:"Nǐ kàn méi kàn?", ko:"당신은 봤어요, 안 봤어요?", en:"Did you look?", vi:"Bạn đã xem chưa?", mn:"Чи харсан уу?", ja:"見ましたか？", au:"15-s11"},
+{zh:"你穿什么都好看。", py:"Nǐ chuān shénme dōu hǎokàn.", ko:"당신은 뭘 입어도 예뻐요.", en:"You look good in anything you wear.", vi:"Bạn mặc gì cũng đẹp.", mn:"Чи юу өмссөн ч гоё харагддаг.", ja:"あなたは何を着ても素敵です。", au:"15-s12"}], 
+
+vocab:[
+{zh:"条", py:"tiáo", ko:"폭이 좁고 긴 사물을 세는 단위", en:"measure word for long, thin things (skirts, pants, etc.)", vi:"lượng từ cho vật dài, mảnh (váy, quần...)", mn:"урт нарийн зүйлийг тоолох нэгж үг (банзал, өмд г.м)", ja:"細長いものを数える量詞（スカート・ズボンなど）", au:"15-tiao"},
+{zh:"红色", py:"hóngsè", ko:"빨간색", en:"red", vi:"màu đỏ", mn:"улаан өнгө", ja:"赤色", au:"15-hongse"},
+{zh:"裙子", py:"qúnzi", ko:"치마", en:"skirt", vi:"váy", mn:"банзал", ja:"スカート", au:"15-qunzi"},
+{zh:"好看", py:"hǎokàn", ko:"예쁘다, 보기 좋다", en:"nice-looking, pretty", vi:"đẹp, dễ nhìn", mn:"гоё, сайхан харагдах", ja:"きれい、素敵", au:"15-haokan"},
+{zh:"白色", py:"báisè", ko:"흰색", en:"white", vi:"màu trắng", mn:"цагаан өнгө", ja:"白色", au:"15-baise"},
+{zh:"黄色", py:"huángsè", ko:"노란색", en:"yellow", vi:"màu vàng", mn:"шар өнгө", ja:"黄色", au:"15-huangse"},
+{zh:"件", py:"jiàn", ko:"벌, 건(옷, 일 등을 세는 단위)", en:"measure word for clothes, matters, etc.", vi:"lượng từ cho quần áo, sự việc", mn:"хувцас, хэрэг явдлыг тоолох нэгж үг", ja:"服や事柄などを数える量詞", au:"15-jian"},
+{zh:"绿色", py:"lǜsè", ko:"녹색", en:"green", vi:"màu xanh lá", mn:"ногоон өнгө", ja:"緑色", au:"15-lvse"},
+{zh:"大衣", py:"dàyī", ko:"외투", en:"overcoat", vi:"áo khoác dài", mn:"пальто", ja:"コート", au:"15-dayi"},
+{zh:"怎么样", py:"zěnmeyàng", ko:"어떠한가", en:"how about, how is it", vi:"thế nào", mn:"ямар вэ", ja:"どうですか", au:"15-zenmeyang"},
+{zh:"蓝色", py:"lánsè", ko:"파란색", en:"blue", vi:"màu xanh dương", mn:"цэнхэр өнгө", ja:"青色", au:"15-lanse"},
+{zh:"没", py:"méi", ko:"~않다(과거 행위에 대한 부정)", en:"not (negation of past actions)", vi:"không, chưa (phủ định hành động đã qua)", mn:"үгүй, ~аагүй (өнгөрсөн үйлийн үгүйсгэл)", ja:"〜ない・〜なかった（過去の否定）", au:"15-mei"},
+{zh:"穿", py:"chuān", ko:"(옷을)입다, (신발을)신다", en:"to wear, to put on", vi:"mặc, đi (giày)", mn:"өмсөх", ja:"着る、履く", au:"15-chuan"}], 
+
+quiz:[
+  {q:"“裙子”의 뜻은?", o:["치마", "바지", "외투"], a:0},
+  {q:"“件”은 무엇을 세는 단위인가요?", o:["켤레로 된 물건", "옷, 일 등", "폭이 좁고 긴 사물"], a:1},
+  {q:"“你穿什么都好看。”의 뜻은?", o:["당신은 뭘 먹어도 맛있어요", "당신은 뭘 사도 비싸요", "당신은 뭘 입어도 예뻐요"], a:2}
+]});
+
+/* 16과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l16'),{draft:false, 
+
+sentences:[
+{zh:"这双棕色的鞋舒服吗？", py:"Zhè shuāng zōngsè de xié shūfu ma?", ko:"이 갈색 신발은 편해요?", en:"Are these brown shoes comfortable?", vi:"Đôi giày màu nâu này có thoải mái không?", mn:"Энэ бор гутал тухтай юу?", ja:"この茶色の靴は履き心地がいいですか？", au:"16-s1"},
+{zh:"这双棕色的鞋很舒服。", py:"Zhè shuāng zōngsè de xié hěn shūfu.", ko:"이 갈색 신발은 아주 편해요.", en:"These brown shoes are very comfortable.", vi:"Đôi giày màu nâu này rất thoải mái.", mn:"Энэ бор гутал маш тухтай.", ja:"この茶色の靴はとても履き心地がいいです。", au:"16-s2"},
+{zh:"这条蓝色的裤子好看吗？", py:"Zhè tiáo lánsè de kùzi hǎokàn ma?", ko:"이 파란색 바지 예뻐요?", en:"Do these blue pants look nice?", vi:"Chiếc quần màu xanh dương này có đẹp không?", mn:"Энэ цэнхэр өмд гоё юу?", ja:"この青いズボンは素敵ですか？", au:"16-s3"},
+{zh:"这条蓝色的裤子很好看。", py:"Zhè tiáo lánsè de kùzi hěn hǎokàn.", ko:"이 파란색 바지는 아주 예뻐요.", en:"These blue pants look very nice.", vi:"Chiếc quần màu xanh dương này rất đẹp.", mn:"Энэ цэнхэр өмд маш гоё.", ja:"この青いズボンはとても素敵です。", au:"16-s4"},
+{zh:"这条绿色的裙子漂亮不漂亮？", py:"Zhè tiáo lǜsè de qúnzi piàoliang bu piàoliang?", ko:"이 녹색 치마는 예뻐요, 안 예뻐요?", en:"Is this green skirt pretty?", vi:"Chiếc váy màu xanh lá này có đẹp không?", mn:"Энэ ногоон банзал үзэсгэлэнтэй юу?", ja:"この緑のスカートはきれいですか？", au:"16-s5"},
+{zh:"这条绿色的裙子很漂亮。", py:"Zhè tiáo lǜsè de qúnzi hěn piàoliang.", ko:"이 녹색 치마는 아주 예뻐요.", en:"This green skirt is very pretty.", vi:"Chiếc váy màu xanh lá này rất đẹp.", mn:"Энэ ногоон банзал маш үзэсгэлэнтэй.", ja:"この緑のスカートはとてもきれいです。", au:"16-s6"},
+{zh:"这件灰色的衬衣好看不好看？", py:"Zhè jiàn huīsè de chènyī hǎokàn bu hǎokàn?", ko:"이 회색 셔츠는 보기 좋아요, 안 좋아요?", en:"Does this gray shirt look nice?", vi:"Chiếc áo sơ mi màu xám này có đẹp không?", mn:"Энэ саарал цамц гоё юу?", ja:"この灰色のシャツは素敵ですか？", au:"16-s7"},
+{zh:"这件灰色的衬衣很好看。", py:"Zhè jiàn huīsè de chènyī hěn hǎokàn.", ko:"이 회색 셔츠는 아주 보기 좋아요.", en:"This gray shirt looks very nice.", vi:"Chiếc áo sơ mi màu xám này rất đẹp.", mn:"Энэ саарал цамц маш гоё.", ja:"この灰色のシャツはとても素敵です。", au:"16-s8"},
+{zh:"这件蓝色的旗袍好看不好看？", py:"Zhè jiàn lánsè de qípáo hǎokàn bu hǎokàn?", ko:"이 파란색 치파오는 예뻐요, 안 예뻐요?", en:"Does this blue qipao look nice?", vi:"Chiếc sườn xám màu xanh dương này có đẹp không?", mn:"Энэ цэнхэр чипао гоё юу?", ja:"この青いチャイナドレス（旗袍）は素敵ですか？", au:"16-s9"},
+{zh:"这件蓝色的旗袍不好看。", py:"Zhè jiàn lánsè de qípáo bù hǎokàn.", ko:"이 파란색 치파오는 안 예뻐요.", en:"This blue qipao does not look nice.", vi:"Chiếc sườn xám màu xanh dương này không đẹp.", mn:"Энэ цэнхэр чипао гоё биш.", ja:"この青いチャイナドレス（旗袍）は素敵ではありません。", au:"16-s10"},
+{zh:"这件红色的大衣怎么样？", py:"Zhè jiàn hóngsè de dàyī zěnmeyàng?", ko:"이 빨간색 외투는 어때요?", en:"How about this red coat?", vi:"Chiếc áo khoác màu đỏ này thế nào?", mn:"Энэ улаан пальто ямар вэ?", ja:"この赤いコートはどうですか？", au:"16-s11"},
+{zh:"这件红色的大衣很漂亮。", py:"Zhè jiàn hóngsè de dàyī hěn piàoliang.", ko:"이 빨간색 외투는 아주 예뻐요.", en:"This red coat is very pretty.", vi:"Chiếc áo khoác màu đỏ này rất đẹp.", mn:"Энэ улаан пальто маш үзэсгэлэнтэй.", ja:"この赤いコートはとてもきれいです。", au:"16-s12"},
+{zh:"这个黑色的手机怎么样？", py:"Zhè ge hēisè de shǒujī zěnmeyàng?", ko:"이 검은색 휴대전화는 어때요?", en:"How about this black cell phone?", vi:"Chiếc điện thoại màu đen này thế nào?", mn:"Энэ хар утас ямар вэ?", ja:"この黒いスマホはどうですか？", au:"16-s13"},
+{zh:"这个黑色的手机不好看。", py:"Zhè ge hēisè de shǒujī bù hǎokàn.", ko:"이 검은색 휴대전화는 안 예뻐요.", en:"This black cell phone does not look nice.", vi:"Chiếc điện thoại màu đen này không đẹp.", mn:"Энэ хар утас гоё биш.", ja:"この黒いスマホは素敵ではありません。", au:"16-s14"},
+{zh:"这个白色的餐桌怎么样？", py:"Zhè ge báisè de cānzhuō zěnmeyàng?", ko:"이 흰색 식탁은 어때요?", en:"How about this white dining table?", vi:"Chiếc bàn ăn màu trắng này thế nào?", mn:"Энэ цагаан хоолны ширээ ямар вэ?", ja:"この白いダイニングテーブルはどうですか？", au:"16-s15"},
+{zh:"这个白色的餐桌很漂亮。", py:"Zhè ge báisè de cānzhuō hěn piàoliang.", ko:"이 흰색 식탁은 아주 예뻐요.", en:"This white dining table is very pretty.", vi:"Chiếc bàn ăn màu trắng này rất đẹp.", mn:"Энэ цагаан хоолны ширээ маш үзэсгэлэнтэй.", ja:"この白いダイニングテーブルはとてもきれいです。", au:"16-s16"},
+{zh:"A：这个黄色的沙发怎么样？", py:"A: Zhè ge huángsè de shāfā zěnmeyàng?", ko:"A: 이 노란색 소파는 어때요?", en:"A: How about this yellow sofa?", vi:"A: Chiếc ghế sofa màu vàng này thế nào?", mn:"A: Энэ шар буйдан ямар вэ?", ja:"A：この黄色いソファはどうですか？", au:"16-s17"},
+{zh:"这个黄色的沙发很舒服。", py:"Zhè ge huángsè de shāfā hěn shūfu.", ko:"이 노란색 소파는 아주 편해요.", en:"This yellow sofa is very comfortable.", vi:"Chiếc ghế sofa màu vàng này rất thoải mái.", mn:"Энэ шар буйдан маш тухтай.", ja:"この黄色いソファはとても座り心地がいいです。", au:"16-s18"}], 
+
+vocab:[
+{zh:"双", py:"shuāng", ko:"켤레(쌍으로 된 것을 세는 단위)", en:"pair (measure word for things in pairs)", vi:"đôi (lượng từ cho vật đi theo cặp)", mn:"хос (хосоор нь тоолох нэгж үг)", ja:"足・組（対のものを数える量詞）", au:"16-shuang"},
+{zh:"棕色", py:"zōngsè", ko:"갈색", en:"brown", vi:"màu nâu", mn:"бор өнгө", ja:"茶色", au:"16-zongse"},
+{zh:"鞋", py:"xié", ko:"신발", en:"shoes", vi:"giày", mn:"гутал", ja:"靴", au:"16-xie"},
+{zh:"舒服", py:"shūfu", ko:"편안하다", en:"comfortable", vi:"thoải mái, dễ chịu", mn:"тухтай", ja:"心地よい、快適", au:"16-shufu"},
+{zh:"裤子", py:"kùzi", ko:"바지", en:"pants, trousers", vi:"quần", mn:"өмд", ja:"ズボン", au:"16-kuzi"},
+{zh:"灰色", py:"huīsè", ko:"회색", en:"gray", vi:"màu xám", mn:"саарал өнгө", ja:"灰色", au:"16-huise"},
+{zh:"衬衣", py:"chènyī", ko:"셔츠, 블라우스", en:"shirt, blouse", vi:"áo sơ mi", mn:"цамц", ja:"シャツ、ブラウス", au:"16-chenyi"},
+{zh:"旗袍", py:"qípáo", ko:"치파오(중국전통의상)", en:"qipao (traditional Chinese dress)", vi:"sườn xám", mn:"чипао (хятадын уламжлалт даашинз)", ja:"チャイナドレス（旗袍）", au:"16-qipao"},
+{zh:"黑色", py:"hēisè", ko:"검은색", en:"black", vi:"màu đen", mn:"хар өнгө", ja:"黒色", au:"16-heise"},
+{zh:"手机", py:"shǒujī", ko:"휴대전화", en:"mobile phone", vi:"điện thoại di động", mn:"гар утас", ja:"携帯電話、スマホ", au:"16-shouji"}], 
+
+quiz:[
+  {q:"“舒服”의 뜻은?", o:["예쁘다", "편안하다", "크다"], a:1},
+  {q:"“双”은 무엇을 세는 단위인가요?", o:["사람", "옷", "신발처럼 쌍으로 된 것"], a:2},
+  {q:"“旗袍”는 무엇인가요?", o:["중국 전통 의상", "휴대전화", "신발"], a:0}
+]});
+
+/* 17과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l17'),{draft:false, 
+
+sentences:[
+{zh:"老师，中国有哪些传统节日？", py:"Lǎoshī, Zhōngguó yǒu nǎxiē chuántǒng jiérì?", ko:"선생님, 중국에는 어떤 전통 명절이 있어요?", en:"Teacher, what traditional festivals does China have?", vi:"Thưa thầy/cô, Trung Quốc có những ngày lễ truyền thống nào?", mn:"Багш аа, Хятадад ямар уламжлалт баяр байдаг вэ?", ja:"先生、中国にはどんな伝統的な祝日がありますか？", au:"17-s1"},
+{zh:"中国有春节，元宵节，中秋节……", py:"Zhōngguó yǒu Chūnjié, Yuánxiāojié, Zhōngqiūjié……", ko:"중국에는 설날, 정월대보름, 추석 등이 있어요.", en:"China has the Spring Festival, the Lantern Festival, the Mid-Autumn Festival, and so on.", vi:"Trung Quốc có Tết Nguyên Đán, Tết Nguyên Tiêu, Tết Trung Thu……", mn:"Хятадад Хаврын баяр, Дэнлэгийн баяр, Дунд намрын баяр гэх мэт байдаг.", ja:"中国には春節、元宵節、中秋節などがあります。", au:"17-s2"},
+{zh:"春节是几月几日？", py:"Chūnjié shì jǐ yuè jǐ hào?", ko:"설날은 몇 월 며칠이에요?", en:"What is the date of the Spring Festival?", vi:"Tết Nguyên Đán là ngày mấy tháng mấy?", mn:"Хаврын баяр хэдэн сарын хэд вэ?", ja:"春節は何月何日ですか？", au:"17-s3"},
+{zh:"春节是农历一月一日。", py:"Chūnjié shì nónglì yī yuè yī rì.", ko:"설날은 음력 1월 1일이에요.", en:"The Spring Festival is on the 1st day of the 1st lunar month.", vi:"Tết Nguyên Đán là ngày mùng 1 tháng Giêng âm lịch.", mn:"Хаврын баяр сарны хуанлиар 1 дүгээр сарын 1-ний өдөр болдог.", ja:"春節は旧暦の1月1日です。", au:"17-s4"},
+{zh:"元宵节是几月几日？", py:"Yuánxiāojié shì jǐ yuè jǐ rì?", ko:"정월대보름은 몇 월 며칠이에요?", en:"What is the date of the Lantern Festival?", vi:"Tết Nguyên Tiêu là ngày mấy tháng mấy?", mn:"Дэнлэгийн баяр хэдэн сарын хэд вэ?", ja:"元宵節は何月何日ですか？", au:"17-s5"},
+{zh:"元宵节是农历一月十五日。", py:"Yuánxiāojié shì nónglì yī yuè shíwǔ rì.", ko:"정월대보름은 음력 1월 15일이에요.", en:"The Lantern Festival is on the 15th day of the 1st lunar month.", vi:"Tết Nguyên Tiêu là ngày 15 tháng Giêng âm lịch.", mn:"Дэнлэгийн баяр сарны хуанлиар 1 дүгээр сарын 15-ны өдөр болдог.", ja:"元宵節は旧暦の1月15日です。", au:"17-s6"},
+{zh:"中秋节呢？", py:"Zhōngqiūjié ne?", ko:"추석은요?", en:"What about the Mid-Autumn Festival?", vi:"Còn Tết Trung Thu thì sao?", mn:"Дунд намрын баяр яах вэ?", ja:"中秋節は？", au:"17-s7"},
+{zh:"中秋节是农历八月十五日。", py:"Zhōngqiūjié shì nónglì bā yuè shíwǔ rì.", ko:"추석은 음력 8월 15일이에요.", en:"The Mid-Autumn Festival is on the 15th day of the 8th lunar month.", vi:"Tết Trung Thu là ngày 15 tháng 8 âm lịch.", mn:"Дунд намрын баяр сарны хуанлиар 8 дугаар сарын 15-ны өдөр болдог.", ja:"中秋節は旧暦の8月15日です。", au:"17-s8"},
+{zh:"中国有情人节吗？", py:"Zhōngguó yǒu Qíngrénjié ma?", ko:"중국에도 연인의 날이 있어요?", en:"Does China have a Valentine's Day?", vi:"Trung Quốc có Lễ Tình nhân không?", mn:"Хятадад Хайрлагчдын баяр байдаг уу?", ja:"中国にもバレンタインデーはありますか？", au:"17-s9"},
+{zh:"有，中国的情人节是农历七月七日。", py:"Yǒu, Zhōngguó de Qíngrénjié shì nónglì qī yuè qī rì.", ko:"있어요, 중국의 연인의 날은 음력 7월 7일이에요.", en:"Yes. China's Valentine's Day is on the 7th day of the 7th lunar month.", vi:"Có. Lễ Tình nhân của Trung Quốc là ngày mùng 7 tháng 7 âm lịch.", mn:"Тийм, Хятадын Хайрлагчдын баяр сарны хуанлиар 7 дугаар сарын 7-ны өдөр болдог.", ja:"はい、中国のバレンタインデーは旧暦の7月7日です。", au:"17-s10"},
+{zh:"二零一二年中国情人节是哪天？", py:"Èr líng yī èr nián Zhōngguó Qíngrénjié shì nǎ tiān?", ko:"2012년 중국의 연인의 날은 며칠이에요?", en:"What day is China's Valentine's Day in 2012?", vi:"Lễ Tình nhân của Trung Quốc năm 2012 là ngày nào?", mn:"2012 онд Хятадын Хайрлагчдын баяр хэдний өдөр вэ?", ja:"2012年の中国のバレンタインデーは何日ですか？", au:"17-s11"},
+{zh:"是二零一二年八月二十三日，星期四。", py:"Shì èr líng yī èr nián bā yuè èrshísān rì, xīngqīsì.", ko:"2012년 8월 23일 목요일이에요.", en:"It is Thursday, August 23, 2012.", vi:"Là thứ Năm, ngày 23 tháng 8 năm 2012.", mn:"2012 оны 8 дугаар сарын 23, пүрэв гараг.", ja:"2012年8月23日、木曜日です。", au:"17-s12"}], 
+
+vocab:[
+{zh:"哪些", py:"nǎxiē", ko:"어떤 것들", en:"which (plural)", vi:"những ... nào", mn:"аль (олон тоо)", ja:"どんな、どれ（複数）", au:"17-naxie"},
+{zh:"传统", py:"chuántǒng", ko:"전통의", en:"traditional", vi:"truyền thống", mn:"уламжлалт", ja:"伝統的な", au:"17-chuantong"},
+{zh:"节日", py:"jiérì", ko:"명절, 기념일", en:"festival, holiday", vi:"ngày lễ", mn:"баяр, ёслол", ja:"祝日、祭日", au:"17-jieri"},
+{zh:"春节", py:"chūnjié", ko:"설날", en:"Spring Festival (Chinese New Year)", vi:"Tết Nguyên Đán", mn:"Хаврын баяр", ja:"春節", au:"17-chunjie"},
+{zh:"元宵节", py:"yuánxiāojié", ko:"정월대보름", en:"Lantern Festival", vi:"Tết Nguyên Tiêu", mn:"Дэнлэгийн баяр", ja:"元宵節", au:"17-yuanxiaojie"},
+{zh:"中秋节", py:"zhōngqiūjié", ko:"추석", en:"Mid-Autumn Festival", vi:"Tết Trung Thu", mn:"Дунд намрын баяр", ja:"中秋節", au:"17-zhongqiujie"},
+{zh:"月", py:"yuè", ko:"월, 달", en:"month", vi:"tháng", mn:"сар", ja:"月", au:"17-yue"},
+{zh:"日", py:"rì", ko:"일, 날", en:"day (of the month)", vi:"ngày", mn:"өдөр", ja:"日", au:"17-ri"},
+{zh:"农历", py:"nónglì", ko:"음력", en:"lunar calendar", vi:"âm lịch", mn:"сарны хуанли", ja:"旧暦", au:"17-nongli"},
+{zh:"情人节", py:"qíngrénjié", ko:"연인의 날", en:"Valentine's Day", vi:"Lễ Tình nhân", mn:"Хайрлагчдын баяр", ja:"バレンタインデー", au:"17-qingrenjie"},
+{zh:"年", py:"nián", ko:"년, 해", en:"year", vi:"năm", mn:"жил", ja:"年", au:"17-nian"},{zh:"天", py:"tiān", ko:"날, 하늘", en:"day; sky", vi:"ngày; trời", mn:"өдөр; тэнгэр", ja:"日、空", au:"17-tian"},
+{zh:"星期四", py:"xīngqīsì", ko:"목요일", en:"Thursday", vi:"thứ Năm", mn:"пүрэв гараг", ja:"木曜日", au:"17-xingqisi"},
+{zh:"星期", py:"xīngqī", ko:"주", en:"week", vi:"tuần", mn:"долоо хоног", ja:"週", au:"17-xingqi"}], 
+
+quiz:[
+  {q:"“农历”의 뜻은?", o:["양력", "음력", "요일"], a:1},
+  {q:"春节는 언제인가요?", o:["음력 1월 1일", "음력 8월 15일", "음력 7월 7일"], a:0},
+  {q:"“中秋节”의 뜻은?", o:["설날", "정월대보름", "추석"], a:2}
+]});
+
+/* 18과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l18'),{draft:false, 
+
+sentences:[
+{zh:"元宵节是几月几日？", py:"Yuánxiāojié shì jǐ yuè jǐ rì?", ko:"정월대보름은 몇 월 며칠이에요?", en:"What is the date of the Lantern Festival?", vi:"Tết Nguyên Tiêu là ngày mấy tháng mấy?", mn:"Дэнлэгийн баяр хэдэн сарын хэд вэ?", ja:"元宵節は何月何日ですか？", au:"18-s1"},
+{zh:"元宵节是农历一月十五日。", py:"Yuánxiāojié shì nónglì yī yuè shíwǔ rì.", ko:"정월대보름은 음력 1월 15일이에요.", en:"The Lantern Festival is on the 15th day of the 1st lunar month.", vi:"Tết Nguyên Tiêu là ngày 15 tháng Giêng âm lịch.", mn:"Дэнлэгийн баяр сарны хуанлиар 1 дүгээр сарын 15-ны өдөр болдог.", ja:"元宵節は旧暦の1月15日です。", au:"18-s2"},
+{zh:"劳动节是几月几号？", py:"Láodòngjié shì jǐ yuè jǐ hào?", ko:"노동절은 몇 월 며칠이에요?", en:"What is the date of Labor Day?", vi:"Ngày Quốc tế Lao động là ngày mấy tháng mấy?", mn:"Хөдөлмөрийн баяр хэдэн сарын хэд вэ?", ja:"メーデー（労働節）は何月何日ですか？", au:"18-s3"},
+{zh:"劳动节是五月一号。", py:"Láodòngjié shì wǔ yuè yī hào.", ko:"노동절은 5월 1일이에요.", en:"Labor Day is May 1st.", vi:"Ngày Quốc tế Lao động là ngày 1 tháng 5.", mn:"Хөдөлмөрийн баяр 5 дугаар сарын 1-ний өдөр.", ja:"メーデー（労働節）は5月1日です。", au:"18-s4"},
+{zh:"今年复活节是哪天？", py:"Jīnnián Fùhuójié shì nǎ tiān?", ko:"올해 부활절은 며칠이에요?", en:"What day is Easter this year?", vi:"Năm nay lễ Phục sinh là ngày nào?", mn:"Энэ жил Амилалтын баяр хэдний өдөр вэ?", ja:"今年のイースターは何日ですか？", au:"18-s5"},
+{zh:"今年复活节是四月八号。", py:"Jīnnián Fùhuójié shì sì yuè bā hào.", ko:"올해 부활절은 4월 8일이에요.", en:"Easter this year is April 8th.", vi:"Năm nay lễ Phục sinh là ngày 8 tháng 4.", mn:"Энэ жил Амилалтын баяр 4 дүгээр сарын 8-ны өдөр.", ja:"今年のイースターは4月8日です。", au:"18-s6"},
+{zh:"二零一五年父亲节是哪天？", py:"Èr líng yī wǔ nián Fùqīnjié shì nǎ tiān?", ko:"2015년 아버지의 날은 며칠이에요?", en:"What day is Father's Day in 2015?", vi:"Ngày của Cha năm 2015 là ngày nào?", mn:"2015 онд Аавуудын баяр хэдний өдөр вэ?", ja:"2015年の父の日は何日ですか？", au:"18-s7"},
+{zh:"二零一五年父亲节是六月二十一号。", py:"Èr líng yī wǔ nián Fùqīnjié shì liù yuè èrshíyī hào.", ko:"2015년 아버지의 날은 6월 21일이에요.", en:"Father's Day in 2015 is June 21st.", vi:"Ngày của Cha năm 2015 là ngày 21 tháng 6.", mn:"2015 онд Аавуудын баяр 6 дугаар сарын 21-ний өдөр.", ja:"2015年の父の日は6月21日です。", au:"18-s8"},
+{zh:"母亲节是星期几？", py:"Mǔqīnjié shì xīngqī jǐ?", ko:"어머니의 날은 무슨 요일이에요?", en:"What day of the week is Mother's Day?", vi:"Ngày của Mẹ là thứ mấy?", mn:"Эхийн баяр ямар гараг вэ?", ja:"母の日は何曜日ですか？", au:"18-s9"},
+{zh:"母亲节是星期天。", py:"Mǔqīnjié shì xīngqītiān.", ko:"어머니의 날은 일요일이에요.", en:"Mother's Day is on Sunday.", vi:"Ngày của Mẹ là Chủ nhật.", mn:"Эхийн баяр ням гарагт болдог.", ja:"母の日は日曜日です。", au:"18-s10"},
+{zh:"今年圣诞节是星期几？", py:"Jīnnián Shèngdànjié shì xīngqī jǐ?", ko:"올해 크리스마스는 무슨 요일이에요?", en:"What day of the week is Christmas this year?", vi:"Năm nay Giáng sinh là thứ mấy?", mn:"Энэ жил Зул сарын баяр ямар гараг вэ?", ja:"今年のクリスマスは何曜日ですか？", au:"18-s11"},
+{zh:"今年圣诞节是星期二。", py:"Jīnnián Shèngdànjié shì xīngqī'èr.", ko:"올해 크리스마스는 화요일이에요.", en:"Christmas this year is on Tuesday.", vi:"Năm nay Giáng sinh là thứ Ba.", mn:"Энэ жил Зул сарын баяр мягмар гарагт тохионо.", ja:"今年のクリスマスは火曜日です。", au:"18-s12"}], 
+
+vocab:[
+{zh:"劳动节", py:"láodòngjié", ko:"노동절", en:"Labor Day", vi:"Ngày Quốc tế Lao động", mn:"Хөдөлмөрийн баяр", ja:"メーデー、労働節", au:"18-laodongjie"},
+{zh:"号", py:"hào", ko:"일(구어표현)", en:"day of the month (spoken)", vi:"ngày (khẩu ngữ)", mn:"өдөр (ярианы хэллэг)", ja:"日（話し言葉）", au:"18-hao"},
+{zh:"今年", py:"jīnnián", ko:"올해, 금년", en:"this year", vi:"năm nay", mn:"энэ жил", ja:"今年", au:"18-jinnian"},
+{zh:"复活节", py:"fùhuójié", ko:"부활절", en:"Easter", vi:"lễ Phục sinh", mn:"Амилалтын баяр", ja:"イースター、復活祭", au:"18-fuhuojie"},
+{zh:"父亲节", py:"fùqīnjié", ko:"아버지의 날", en:"Father's Day", vi:"Ngày của Cha", mn:"Аавуудын баяр", ja:"父の日", au:"18-fuqinjie"},
+{zh:"母亲节", py:"mǔqīnjié", ko:"어머니의 날", en:"Mother's Day", vi:"Ngày của Mẹ", mn:"Эхийн баяр", ja:"母の日", au:"18-muqinjie"},
+{zh:"星期几", py:"xīngqī jǐ", ko:"무슨 요일", en:"what day of the week", vi:"thứ mấy", mn:"ямар гараг", ja:"何曜日", au:"18-xingqiji"},
+{zh:"星期天", py:"xīngqītiān", ko:"일요일", en:"Sunday", vi:"Chủ nhật", mn:"ням гараг", ja:"日曜日", au:"18-xingqitian"},
+{zh:"圣诞节", py:"shèngdànjié", ko:"크리스마스", en:"Christmas", vi:"Giáng sinh", mn:"Зул сарын баяр", ja:"クリスマス", au:"18-shengdanjie"},
+{zh:"星期二", py:"xīngqī'èr", ko:"화요일", en:"Tuesday", vi:"thứ Ba", mn:"мягмар гараг", ja:"火曜日", au:"18-xingqier"}], 
+
+quiz:[
+  {q:"“劳动节”는 몇 월 며칠인가요?", o:["4월 1일", "5월 1일", "6월 1일"], a:1},
+  {q:"“星期天”의 뜻은?", o:["일요일", "월요일", "화요일"], a:0},
+  {q:"“母亲节”의 뜻은?", o:["아버지의 날", "크리스마스", "어머니의 날"], a:2}
+]});
+
+/* 19과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l19'),{draft:false, 
+
+sentences:[
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"19-s1"},
+{zh:"我要一碗面条儿。", py:"Wǒ yào yì wǎn miàntiáor.", ko:"국수 한 그릇 주세요.", en:"I'd like a bowl of noodles.", vi:"Tôi muốn một bát mì.", mn:"Надад нэг аяга гоймон өгөөч.", ja:"麺を一杯ください。", au:"19-s2"},
+{zh:"您要大碗的还是小碗的？", py:"Nín yào dà wǎn de háishi xiǎo wǎn de?", ko:"큰 그릇으로 드릴까요, 작은 그릇으로 드릴까요?", en:"Would you like a large bowl or a small bowl?", vi:"Quý khách muốn bát lớn hay bát nhỏ?", mn:"Та том аяга авах уу, жижиг аяга авах уу?", ja:"大きい器と小さい器、どちらになさいますか？", au:"19-s3"},
+{zh:"大碗的。", py:"Dà wǎn de.", ko:"큰 그릇으로요.", en:"A large bowl.", vi:"Bát lớn.", mn:"Том аягыг.", ja:"大きい方でお願いします。", au:"19-s4"},
+{zh:"辣的还是不辣的？", py:"Là de háishi bú là de?", ko:"매운 걸로 드릴까요, 안 매운 걸로 드릴까요?", en:"Spicy or not spicy?", vi:"Cay hay không cay?", mn:"Халуун ногоотой юу, халуун ногоогүй юу?", ja:"辛いのと辛くないの、どちらにしますか？", au:"19-s5"},
+{zh:"不辣的。", py:"Bú là de.", ko:"안 매운 걸로요.", en:"Not spicy.", vi:"Không cay.", mn:"Халуун ногоогүйг.", ja:"辛くないのでお願いします。", au:"19-s6"},
+{zh:"再要一杯豆浆。", py:"Zài yào yì bēi dòujiāng.", ko:"콩물 한 잔 더 주세요.", en:"And one more cup of soy milk, please.", vi:"Cho thêm một ly sữa đậu nành.", mn:"Бас нэг аяга шар буурцгийн сүү өгөөч.", ja:"もう一杯、豆乳をください。", au:"19-s7"},
+{zh:"要热的还是凉的？", py:"Yào rè de háishi liáng de?", ko:"뜨거운 걸로 드릴까요, 차가운 걸로 드릴까요?", en:"Hot or cold?", vi:"Nóng hay lạnh?", mn:"Халуун уу, хүйтэн үү?", ja:"温かいのと冷たいの、どちらにしますか？", au:"19-s8"},
+{zh:"凉的。", py:"Liáng de.", ko:"차가운 걸로요.", en:"Cold.", vi:"Lạnh.", mn:"Хүйтнийг.", ja:"冷たいのでお願いします。", au:"19-s9"},
+{zh:"一共五十块。现金还是刷卡？", py:"Yígòng wǔshí kuài. Xiànjīn háishi shuākǎ?", ko:"모두 50위안이에요. 현금으로 하시겠어요, 카드로 하시겠어요?", en:"That's 50 yuan in total. Cash or card?", vi:"Tổng cộng 50 tệ. Tiền mặt hay quẹt thẻ?", mn:"Нийт 50 юань. Бэлнээр үү, картаар уу?", ja:"全部で50元です。現金ですか、カードですか？", au:"19-s10"},
+{zh:"刷卡。", py:"Shuākǎ.", ko:"카드로 할게요.", en:"By card, please.", vi:"Quẹt thẻ.", mn:"Картаар.", ja:"カードでお願いします。", au:"19-s11"}], 
+
+vocab:[
+{zh:"要", py:"yào", ko:"원하다, 필요로 하다", en:"to want, to need", vi:"muốn, cần", mn:"хүсэх, авах", ja:"欲しい、要る", au:"19-yao"},
+{zh:"碗", py:"wǎn", ko:"그릇, 공기", en:"bowl", vi:"bát", mn:"аяга", ja:"お椀、どんぶり", au:"19-wan"},
+{zh:"面条儿", py:"miàntiáor", ko:"국수", en:"noodles", vi:"mì", mn:"гоймон", ja:"麺", au:"19-miantiaoer"},
+{zh:"大", py:"dà", ko:"크다", en:"big, large", vi:"lớn, to", mn:"том", ja:"大きい", au:"19-da"},
+{zh:"还是", py:"háishi", ko:"또는, 아니면", en:"or", vi:"hay là", mn:"эсвэл", ja:"それとも", au:"19-haishi"},
+{zh:"小", py:"xiǎo", ko:"작다", en:"small", vi:"nhỏ", mn:"жижиг", ja:"小さい", au:"19-xiao"},
+{zh:"辣", py:"là", ko:"맵다", en:"spicy, hot", vi:"cay", mn:"халуун ногоотой", ja:"辛い", au:"19-la"},
+{zh:"再", py:"zài", ko:"더, 다시", en:"again, more", vi:"thêm, lại", mn:"дахин, бас", ja:"また、さらに", au:"19-zai"},
+{zh:"杯", py:"bēi", ko:"잔, 컵", en:"cup, glass", vi:"ly, cốc", mn:"аяга, хундага", ja:"杯、コップ", au:"19-bei"},
+{zh:"豆浆", py:"dòujiāng", ko:"콩물", en:"soy milk", vi:"sữa đậu nành", mn:"шар буурцгийн сүү", ja:"豆乳", au:"19-doujiang"},
+{zh:"热", py:"rè", ko:"뜨겁다, 덥다", en:"hot", vi:"nóng", mn:"халуун", ja:"熱い、暑い", au:"19-re"},
+{zh:"凉", py:"liáng", ko:"차갑다, 서늘하다", en:"cold, cool", vi:"lạnh, mát", mn:"хүйтэн, сэрүүн", ja:"冷たい、涼しい", au:"19-liang"},
+{zh:"一共", py:"yígòng", ko:"모두", en:"altogether, in total", vi:"tổng cộng", mn:"нийт, бүгд", ja:"全部で、合計で", au:"19-yigong"},
+{zh:"块", py:"kuài", ko:"콰이(중국화폐단위)", en:"yuan (spoken unit of Chinese currency)", vi:"tệ (đơn vị tiền tệ Trung Quốc, khẩu ngữ)", mn:"юань (Хятадын мөнгөн тэмдэгтийн нэгж, ярианы хэллэг)", ja:"元（中国の通貨単位、話し言葉）", au:"19-kuai"},
+{zh:"现金", py:"xiànjīn", ko:"현금", en:"cash", vi:"tiền mặt", mn:"бэлэн мөнгө", ja:"現金", au:"19-xianjin"},
+{zh:"刷卡", py:"shuākǎ", ko:"카드로 계산하다", en:"to pay by card", vi:"quẹt thẻ", mn:"картаар төлөх", ja:"カードで支払う", au:"19-shuaka"}], 
+
+quiz:[
+  {q:"“还是”의 뜻은?", o:["모두", "또는, 아니면", "더, 다시"], a:1},
+  {q:"“刷卡”의 뜻은?", o:["현금으로 내다", "국수를 먹다", "카드로 계산하다"], a:2},
+  {q:"“辣”의 뜻은?", o:["맵다", "달다", "짜다"], a:0}
+]});
+
+/* 20과: 단어 + 본문 */
+Object.assign(LESSONS.find(l=>l.id==='l20'),{draft:false, 
+
+sentences:[
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s1"},
+{zh:"我要一个汉堡。", py:"Wǒ yào yí ge hànbǎo.", ko:"햄버거 하나 주세요.", en:"I'd like a hamburger.", vi:"Tôi muốn một cái hamburger.", mn:"Надад нэг гамбургер өгөөч.", ja:"ハンバーガーを一つください。", au:"20-s2"},
+{zh:"您要大的还是小的？", py:"Nín yào dà de háishi xiǎo de?", ko:"큰 걸로 드릴까요, 작은 걸로 드릴까요?", en:"Would you like a large one or a small one?", vi:"Quý khách muốn cái lớn hay cái nhỏ?", mn:"Та томыг нь авах уу, жижгийг нь авах уу?", ja:"大きいのと小さいの、どちらになさいますか？", au:"20-s3"},
+{zh:"大的。", py:"Dà de.", ko:"큰 걸로요.", en:"A large one.", vi:"Cái lớn.", mn:"Томыг нь.", ja:"大きいのでお願いします。", au:"20-s4"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s5"},
+{zh:"我要一个比萨饼。", py:"Wǒ yào yí ge bǐsàbǐng.", ko:"피자 하나 주세요.", en:"I'd like a pizza.", vi:"Tôi muốn một cái pizza.", mn:"Надад нэг пицца өгөөч.", ja:"ピザを一つください。", au:"20-s6"},
+{zh:"您要大的还是小的？", py:"Nín yào dà de háishi xiǎo de?", ko:"큰 걸로 드릴까요, 작은 걸로 드릴까요?", en:"Would you like a large one or a small one?", vi:"Quý khách muốn cái lớn hay cái nhỏ?", mn:"Та томыг нь авах уу, жижгийг нь авах уу?", ja:"大きいのと小さいの、どちらになさいますか？", au:"20-s7"}
+,{zh:"小的。", py:"Xiǎo de.", ko:"작은 걸로요.", en:"A small one.", vi:"Cái nhỏ.", mn:"Жижгийг нь.", ja:"小さいのでお願いします。", au:"20-s8"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s9"},
+{zh:"我要一杯水。", py:"Wǒ yào yì bēi shuǐ.", ko:"물 한 잔 주세요.", en:"I'd like a glass of water.", vi:"Tôi muốn một ly nước.", mn:"Надад нэг аяга ус өгөөч.", ja:"水を一杯ください。", au:"20-s10"},
+{zh:"您要凉的还是热的？", py:"Nín yào liáng de háishi rè de?", ko:"차가운 걸로 드릴까요, 뜨거운 걸로 드릴까요?", en:"Would you like it cold or hot?", vi:"Quý khách muốn lạnh hay nóng?", mn:"Та хүйтнийг уу, халуунийг уу?", ja:"冷たいのと温かいの、どちらになさいますか？", au:"20-s11"},
+{zh:"热的。", py:"Rè de.", ko:"뜨거운 걸로요.", en:"Hot.", vi:"Nóng.", mn:"Халууныг.", ja:"温かいのでお願いします。", au:"20-s12"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s13"},
+{zh:"我要一杯豆浆。", py:"Wǒ yào yì bēi dòujiāng.", ko:"콩물 한 잔 주세요.", en:"I'd like a cup of soy milk.", vi:"Tôi muốn một ly sữa đậu nành.", mn:"Надад нэг аяга шар буурцгийн сүү өгөөч.", ja:"豆乳を一杯ください。", au:"20-s14"},
+{zh:"您要甜的还是咸的？", py:"Nín yào tián de háishi xián de?", ko:"단 걸로 드릴까요, 짠 걸로 드릴까요?", en:"Would you like it sweet or salty?", vi:"Quý khách muốn ngọt hay mặn?", mn:"Та чихэртэйг уу, давстайг уу?", ja:"甘いのとしょっぱいの、どちらになさいますか？", au:"20-s15"},
+{zh:"甜的。", py:"Tián de.", ko:"단 걸로요.", en:"Sweet.", vi:"Ngọt.", mn:"Чихэртэйг.", ja:"甘いのでお願いします。", au:"20-s16"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s17"},
+{zh:"我要一个汉堡。", py:"Wǒ yào yí ge hànbǎo.", ko:"햄버거 하나 주세요.", en:"I'd like a hamburger.", vi:"Tôi muốn một cái hamburger.", mn:"Надад нэг гамбургер өгөөч.", ja:"ハンバーガーを一つください。", au:"20-s18"},
+{zh:"您要辣的还是不辣的？", py:"Nín yào là de háishi bú là de?", ko:"매운 걸로 드릴까요, 안 매운 걸로 드릴까요?", en:"Would you like it spicy or not spicy?", vi:"Quý khách muốn cay hay không cay?", mn:"Та халуун ногоотойг уу, халуун ногоогүйг уу?", ja:"辛いのと辛くないの、どちらになさいますか？", au:"20-s19"},
+{zh:"不辣的。", py:"Bú là de.", ko:"안 매운 걸로요.", en:"Not spicy.", vi:"Không cay.", mn:"Халуун ногоогүйг.", ja:"辛くないのでお願いします。", au:"20-s20"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s21"},
+{zh:"我要一斤饺子。", py:"Wǒ yào yì jīn jiǎozi.", ko:"만두 한 근 주세요.", en:"I'd like one jin (500 g) of dumplings.", vi:"Tôi muốn một cân sủi cảo.", mn:"Надад нэг цзин (500 грамм) банш өгөөч.", ja:"餃子を一斤（500グラム）ください。", au:"20-s22"},
+{zh:"您要羊肉的还是牛肉的？", py:"Nín yào yángròu de háishi niúròu de?", ko:"양고기로 드릴까요, 소고기로 드릴까요?", en:"Would you like lamb or beef?", vi:"Quý khách muốn thịt cừu hay thịt bò?", mn:"Та хонины махтайг уу, үхрийн махтайг уу?", ja:"羊肉と牛肉、どちらになさいますか？", au:"20-s23"},
+{zh:"牛肉的。", py:"Niúròu de.", ko:"소고기로요.", en:"Beef.", vi:"Thịt bò.", mn:"Үхрийн махтайг.", ja:"牛肉でお願いします。", au:"20-s24"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s25"},
+{zh:"我要一碗米饭。", py:"Wǒ yào yì wǎn mǐfàn.", ko:"쌀밥 한 그릇 주세요.", en:"I'd like a bowl of rice.", vi:"Tôi muốn một bát cơm.", mn:"Надад нэг аяга будаа өгөөч.", ja:"ご飯を一杯ください。", au:"20-s26"},
+{zh:"您要大碗的还是小碗的？", py:"Nín yào dà wǎn de háishi xiǎo wǎn de?", ko:"큰 그릇으로 드릴까요, 작은 그릇으로 드릴까요?", en:"Would you like a large bowl or a small bowl?", vi:"Quý khách muốn bát lớn hay bát nhỏ?", mn:"Та том аяга авах уу, жижиг аяга авах уу?", ja:"大きい器と小さい器、どちらになさいますか？", au:"20-s27"},
+{zh:"小碗的。", py:"Xiǎo wǎn de.", ko:"작은 그릇으로요.", en:"A small bowl.", vi:"Bát nhỏ.", mn:"Жижиг аягыг.", ja:"小さい方でお願いします。", au:"20-s28"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s29"},
+{zh:"我要一杯咖啡。", py:"Wǒ yào yì bēi kāfēi.", ko:"커피 한 잔 주세요.", en:"I'd like a cup of coffee.", vi:"Tôi muốn một ly cà phê.", mn:"Надад нэг аяга кофе өгөөч.", ja:"コーヒーを一杯ください。", au:"20-s30"},
+{zh:"您要大杯的还是小杯的？", py:"Nín yào dà bēi de háishi xiǎo bēi de?", ko:"큰 잔으로 드릴까요, 작은 잔으로 드릴까요?", en:"Would you like a large cup or a small cup?", vi:"Quý khách muốn ly lớn hay ly nhỏ?", mn:"Та том аяга авах уу, жижиг аяга авах уу?", ja:"大きいカップと小さいカップ、どちらになさいますか？", au:"20-s31"},
+{zh:"大杯的。", py:"Dà bēi de.", ko:"큰 잔으로요.", en:"A large cup.", vi:"Ly lớn.", mn:"Том аягыг.", ja:"大きいカップでお願いします。", au:"20-s32"},
+{zh:"请问，您要什么？", py:"Qǐngwèn, nín yào shénme?", ko:"실례합니다, 무엇을 드릴까요?", en:"Excuse me, what would you like?", vi:"Xin hỏi, quý khách muốn dùng gì ạ?", mn:"Асууя, та юу авах вэ?", ja:"すみません、何になさいますか？", au:"20-s33"},
+{zh:"我要一瓶可乐。", py:"Wǒ yào yì píng kělè.", ko:"콜라 한 병 주세요.", en:"I'd like a bottle of cola.", vi:"Tôi muốn một chai coca.", mn:"Надад нэг шил кола өгөөч.", ja:"コーラを一本ください。", au:"20-s34"},
+{zh:"您要大瓶的还是小瓶的？", py:"Nín yào dà píng de háishi xiǎo píng de?", ko:"큰 병으로 드릴까요, 작은 병으로 드릴까요?", en:"Would you like a large bottle or a small bottle?", vi:"Quý khách muốn chai lớn hay chai nhỏ?", mn:"Та том шил авах уу, жижиг шил авах уу?", ja:"大きいボトルと小さいボトル、どちらになさいますか？", au:"20-s35"},
+{zh:"大瓶的。", py:"Dà píng de.", ko:"큰 병으로요.", en:"A large bottle.", vi:"Chai lớn.", mn:"Том шилийг.", ja:"大きいボトルでお願いします。", au:"20-s36"}], 
+
+vocab:[
+{zh:"汉堡", py:"hànbǎo", ko:"햄버거", en:"hamburger", vi:"bánh hamburger", mn:"гамбургер", ja:"ハンバーガー", au:"20-hanbao"},
+{zh:"比萨饼", py:"bǐsàbǐng", ko:"피자", en:"pizza", vi:"bánh pizza", mn:"пицца", ja:"ピザ", au:"20-bisabing"},
+{zh:"水", py:"shuǐ", ko:"물", en:"water", vi:"nước", mn:"ус", ja:"水", au:"20-shui"},
+{zh:"甜", py:"tián", ko:"달다", en:"sweet", vi:"ngọt", mn:"амтат, чихэрлэг", ja:"甘い", au:"20-tian"},
+{zh:"咸", py:"xián", ko:"짜다", en:"salty", vi:"mặn", mn:"давстай", ja:"しょっぱい", au:"20-xian"},
+{zh:"斤", py:"jīn", ko:"근", en:"jin (500 g)", vi:"cân (500 g)", mn:"цзин (500 грамм)", ja:"斤（500グラム）", au:"20-jin"},
+{zh:"饺子", py:"jiǎozi", ko:"(소가 든 반달 모양)만두", en:"dumplings (jiaozi)", vi:"sủi cảo", mn:"банш", ja:"餃子", au:"20-jiaozi"},
+{zh:"羊肉", py:"yángròu", ko:"양고기", en:"lamb, mutton", vi:"thịt cừu", mn:"хонины мах", ja:"羊肉", au:"20-yangrou"},
+{zh:"牛肉", py:"niúròu", ko:"소고기", en:"beef", vi:"thịt bò", mn:"үхрийн мах", ja:"牛肉", au:"20-niurou"},
+{zh:"米饭", py:"mǐfàn", ko:"쌀밥", en:"cooked rice", vi:"cơm", mn:"будаа", ja:"ご飯", au:"20-mifan"},
+{zh:"咖啡", py:"kāfēi", ko:"커피", en:"coffee", vi:"cà phê", mn:"кофе", ja:"コーヒー", au:"20-kafei"},
+{zh:"瓶", py:"píng", ko:"병", en:"bottle", vi:"chai", mn:"шил", ja:"瓶、本", au:"20-ping"},
+{zh:"可乐", py:"kělè", ko:"콜라", en:"cola", vi:"coca", mn:"кола", ja:"コーラ", au:"20-kele"}], 
+
+quiz:[
+  {q:"“饺子”의 뜻은?", o:["국수", "쌀밥", "만두"], a:2},
+  {q:"“咸”의 뜻은?", o:["달다", "짜다", "맵다"], a:1},
+  {q:"“斤”의 뜻은?", o:["근(무게 단위)", "병", "잔"], a:0}
+]});
+
+const LANGS = {ko:'한국어', en:'English', vi:'Tiếng Việt', mn:'Монгол', ja:'日本語'};
+
+/* ============================= 앱 코드 ============================= */
+const KEY='zhapp:v2';
+let S = {name:'', cls:'', lang:'ko', lesson:(LESSONS.find(l=>!l.draft)||LESSONS[0]).id, tab:'vocab', data:{}};
+try{ const r=localStorage.getItem(KEY); if(r) S=Object.assign(S, JSON.parse(r)); }catch(e){}
+if(S.tab==='exercise') S.tab='vocab';
+if(S.cls!=='1' && S.cls!=='2') S.cls='';
+/* 이름은 수업 날짜가 바뀌면 지워서, 매 수업 시간마다 새로 입력하게 합니다 (진행 기록은 그대로) */
+function todayStr(){ const t=new Date(); return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'); }
+if(S.name && S.nameDate!==todayStr()){ S.name=''; S.nameDate=''; }
+if(!LESSONS.some(l=>l.id===S.lesson)) S.lesson=(LESSONS.find(l=>!l.draft)||LESSONS[0]).id;
+/* 12과를 문장 하나씩 나누면서 본문 기록 번호가 바뀌어, 이 폰의 12과 본문 기록을 한 번만 비웁니다 */
+try{ S.data=S.data||{}; const d12=S.data.l12||(S.data.l12={}); if(!d12.sp16){ delete d12.p; d12.sp16=true; } }catch(e){}
+/* 13과도 문장 하나씩으로 나누면서 본문 기록 번호가 바뀌어, 이 폰의 13과 본문 기록을 한 번만 비웁니다 */
+try{ const d13=S.data.l13||(S.data.l13={}); if(!d13.sp10){ delete d13.p; d13.sp10=true; } }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function blank(){ return {best:{},tried:{},self:{},marks:{},heard:{},tc:{},fr:{}}; }
+function D(id){
+  const d=S.data[id]||(S.data[id]={});
+  if(!d.p) d.p=blank();
+  if(!d.quiz) d.quiz={};
+  if(!d.vq) d.vq={};
+  if(!d.vh) d.vh=[];
+  if(!d.wdone) d.wdone={};
+  ['p'].forEach(k=>{ if(!d[k].marks) d[k].marks={}; if(!d[k].heard) d[k].heard={}; if(!d[k].tc) d[k].tc={}; if(!d[k].fr) d[k].fr={}; });
+  return d;
+}
+const lesson=()=>LESSONS.find(l=>l.id===S.lesson)||LESSONS.find(l=>!l.draft)||LESSONS[0];
+const esc=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const KLABEL={p:'본문'};
+const FAILWHY={notAllowed:'마이크 허용 안 됨', network:'연결 오류', langUnsupported:'중국어 인식 미지원', noSR:'점수 미지원 브라우저'};
+
+/* ============ 연습 가능 시간 (수업 시간에만 열림) ============
+   - 모든 시각은 한국 시간(KST)입니다. 요일: 0=일 1=월 2=화 3=수 4=목 5=금 6=토
+   - 수업이 바뀌면 이 설정만 고치면 됩니다. */
+const OPEN_CFG={
+  enforce:true,           // false 로 바꾸면 시간 제한 없이 항상 열립니다
+  allowOpenParam:true,    // true: 주소 끝에 ?open=1 을 붙이면 시간 제한 없이 열림 (선생님 점검용. 코드가 공개돼 있어 학생도 알 수 있음. 필요 없으면 false)
+  afterMin:5,             // 수업 종료 후 계속 열어 두는 시간(분). 시작 전에는 열지 않음
+  classes:{
+    '1':{days:[1,3], start:'15:00', end:'16:15'},
+    '2':{days:[1,3], start:'16:30', end:'17:45'}
+  },
+  closedDates:[],         // 휴강 날짜. 예: '2026-10-14' (모든 반) 또는 {date:'2026-10-14', cls:'1'}
+  extraSessions:[]        // 보강. 예: {date:'2026-10-17', cls:'1', start:'10:00', end:'11:15'}
+};
+const KST_MS=9*3600*1000;
+const pad2=n=>String(n).padStart(2,'0');
+function kstParts(ms){ const d=new Date(ms+KST_MS); return {y:d.getUTCFullYear(),m:d.getUTCMonth()+1,d:d.getUTCDate(),dow:d.getUTCDay(),hh:d.getUTCHours(),mm:d.getUTCMinutes()}; }
+const kstYmd=p=>p.y+'-'+pad2(p.m)+'-'+pad2(p.d);
+const hm2min=t=>{ const a=String(t).split(':'); return (+a[0])*60+(+a[1]); };
+
+/* 시각: 가능하면 GitHub 서버 시각(응답 헤더 Date+Age)을 기준으로 하고, 못 읽으면 기기 시계를 씁니다 */
+let timeBase={srv:0,perf:0,ok:false};
+function nowMs(){ return timeBase.ok ? timeBase.srv+(performance.now()-timeBase.perf) : Date.now(); }
+async function syncTime(){
+  try{
+    const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),4000);
+    const t0=performance.now();
+    const r=await fetch(location.pathname+'?t='+Date.now(),{method:'HEAD',cache:'no-store',signal:ctl.signal});
+    const t1=performance.now(); clearTimeout(to);
+    const dh=r.headers.get('date'); if(!dh) return;
+    let srv=Date.parse(dh); if(isNaN(srv)) return;
+    const age=parseInt(r.headers.get('age')||'0',10); if(age>0) srv+=age*1000;
+    timeBase={srv:srv+(t1-t0)/2, perf:t1, ok:true};
+  }catch(e){ /* file:// 이거나 인터넷이 끊기면 기기 시계로 판단 */ }
+}
+function sessionsFor(cls,p){
+  const out=[], c=OPEN_CFG.classes[cls]; if(!c) return out;
+  const date=kstYmd(p);
+  const closed=OPEN_CFG.closedDates.some(x=>typeof x==='string'?x===date:(x.date===date&&(!x.cls||x.cls==='all'||String(x.cls)===String(cls))));
+  if(!closed && c.days.includes(p.dow)) out.push({s:hm2min(c.start), e:hm2min(c.end)+OPEN_CFG.afterMin});
+  OPEN_CFG.extraSessions.forEach(x=>{ if(x.date===date && String(x.cls)===String(cls)) out.push({s:hm2min(x.start), e:hm2min(x.end)+OPEN_CFG.afterMin}); });
+  return out;
+}
+function isOpenNow(){
+  if(!OPEN_CFG.enforce) return true;
+  if(OPEN_CFG.allowOpenParam && /[?&]open=1(&|$)/.test(location.search)) return true;
+  const p=kstParts(nowMs()), min=p.hh*60+p.mm;
+  const list=S.cls?[S.cls]:Object.keys(OPEN_CFG.classes);
+  return list.some(c=>sessionsFor(c,p).some(x=>min>=x.s && min<x.e));
+}
+const CLSN={ko:n=>n+'반', en:n=>'Class '+n, vi:n=>'Lớp '+n, mn:n=>n+'-р анги', ja:n=>n+'組'};
+const DOWN={ko:['일','월','화','수','목','금','토'], en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], vi:['CN','T2','T3','T4','T5','T6','T7'], mn:['Ням','Дав','Мяг','Лха','Пүр','Баа','Бям'], ja:['日','月','火','水','木','金','土']};
+const LOCKTX={
+  ko:{t:'지금은 연습 시간이 아니에요', s:'수업 시간에만 열려요.', w:'연습 가능 시간'},
+  en:{t:'Practice is closed right now', s:'This app opens only during class time.', w:'Open hours'},
+  vi:{t:'Hiện chưa đến giờ luyện tập', s:'Ứng dụng chỉ mở trong giờ học.', w:'Giờ mở'},
+  mn:{t:'Одоо дасгалын цаг биш байна', s:'Зөвхөн хичээлийн цагаар нээгдэнэ.', w:'Нээлттэй цаг'},
+  ja:{t:'今は練習の時間ではありません', s:'授業時間中だけ使えます。', w:'利用できる時間'}
+};
+function lockHTML(){
+  const lg=S.lang in LOCKTX?S.lang:'ko', T=LOCKTX[lg], dn=DOWN[lg], cn=CLSN[lg];
+  const ids=S.cls?[S.cls]:Object.keys(OPEN_CFG.classes);
+  return '<h2>'+esc(T.t)+'</h2><p>'+esc(T.s)+'</p><p><b>'+esc(T.w)+'</b></p><ul>'+
+    ids.map(id=>{ const c=OPEN_CFG.classes[id]; return '<li>'+esc(cn(id))+' · '+c.days.map(x=>dn[x]).join('·')+' '+esc(c.start)+'~'+esc(c.end)+'</li>'; }).join('')+'</ul>';
+}
+let lockOn=true, timeChecked=false;
+function applyLock(){
+  const box=$('lock'); if(!box) return;
+  timeChecked=true;
+  if(isOpenNow()){
+    if(lockOn){ lockOn=false; box.hidden=true; document.body.classList.remove('locked'); render(); }
+    return;
+  }
+  if(typeof cur!=='undefined' && cur) return;      /* 녹음 중이면 끝난 뒤(다음 확인 때) 잠급니다 */
+  if(typeof wcur!=='undefined' && wcur) return;
+  stopRef(); if(playing){ try{playing.pause();}catch(e){} }
+  releaseMic();
+  box.innerHTML=lockHTML(); box.hidden=false; lockOn=true; document.body.classList.add('locked');
+}
+/* 연습한 시각·반 기록(제출 화면에서 교사가 확인) */
+function stampPractice(lid){
+  const d=D(lid), t=Math.round(nowMs());
+  const pt=d.pt||(d.pt={f:t,l:t,c:''});
+  if(!pt.f||t<pt.f) pt.f=t; if(!pt.l||t>pt.l) pt.l=t;
+  const set=(pt.c||'').split(',').filter(Boolean);
+  if(S.cls && !set.includes(S.cls)){ set.push(S.cls); pt.c=set.sort().join(','); }
+  save();
+}
+
+
+
+/* ----- 상태 계산 ----- */
+/* k: 'p' = 본문, 'x' = 연습 / 카드 하나 = 문장 또는 문답 하나 = 통과 단위 */
+const items=(l,k)=> l.sentences;
+function iPass(l,k,i){ const d=D(l.id)[k]; return (d.best[i]!=null && d.best[i]>=l.threshold) || !!d.self[i]; }
+function kCount(l,k){ return items(l,k).filter((_,i)=>iPass(l,k,i)).length; }
+function kPass(l,k){ const arr=items(l,k); return arr.length>0 && arr.every((_,i)=>iPass(l,k,i)); }
+function cardTotals(l){
+  let p=0,t=0;
+  ['p'].forEach(k=>{ t+=items(l,k).length; p+=kCount(l,k); });
+  return [p,t];
+}
+function quizDone(l){ return Object.keys(D(l.id).quiz).length===l.quiz.length; }
+function quizScore(l){ const d=D(l.id); return l.quiz.filter((q,i)=>d.quiz[i]===q.a).length; }
+function vocabDone(l){ return !l.vocab.length || Object.keys(D(l.id).vq).length===l.vocab.length; }
+function vocabScore(l){ const d=D(l.id); return l.vocab.filter((_,i)=>d.vq[i]===i).length; }
+function vocabPct(l){ return l.vocab.length? Math.round(vocabScore(l)/l.vocab.length*100) : 0; }
+/* 단어퀴즈 시도 기록: 끝낸 시도마다 맞힌 개수를 남김 (다시 풀기를 눌러도 기록은 지워지지 않음) */
+function vocabHist(l){
+  const d=D(l.id);
+  if(vocabDone(l) && l.vocab.length && d.vh.length===0){ d.vh.push(vocabScore(l)); save(); }
+  return d.vh;
+}
+function histText(l, sep){
+  const h=vocabHist(l), n=l.vocab.length||1;
+  const pcts=h.map(x=>Math.round(x/n*100)+'%');
+  const shown=pcts.length>8 ? ['…'].concat(pcts.slice(-8)) : pcts;
+  return {count:h.length, text:shown.join(sep||' → ')};
+}
+function lessonPass(l){ return kPass(l,'p') && vocabDone(l) && quizDone(l); }
+function tabsOf(l){
+  const T=[['vocab','🔤','단어'],['practice','🎙','본문']];
+  T.push(['quiz','✏️','퀴즈'],['card','🪪','제출']);
+  return T;
+}
+
+
+/* ----- 음성 합성 / 녹음 ----- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synth = window.speechSynthesis;
+let zhVoice=null, voicesKnown=0;
+function pickVoice(){
+  if(!synth) return;
+  const v=synth.getVoices(); voicesKnown=v.length;
+  zhVoice = v.find(x=>/^zh[-_]CN/i.test(x.lang)) || v.find(x=>/^zh/i.test(x.lang)) || null;
+}
+if(synth){ pickVoice(); synth.onvoiceschanged=pickVoice; }
+function speak(text, rate, onend){
+  if(!synth){ return false; }
+  synth.cancel();
+  const u=new SpeechSynthesisUtterance(text.replace(/[“”"]/g,'').replace(/\n/g,' '));
+  u.lang='zh-CN'; if(zhVoice) u.voice=zhVoice; u.rate=rate||1;
+  if(onend){ u.onend=onend; u.onerror=onend; }
+  synth.speak(u); return true;
+}
+const audioURL={}, msg={};
+let cur=null, playing=null;
+function playMine(key){
+  if(!audioURL[key]) return;
+  if(playing){ try{playing.pause();}catch(e){} }
+  playing=new Audio(audioURL[key]); playing.play().catch(()=>{});
+}
+
+let refAudio=null;
+function stopRef(){ if(refAudio){ try{refAudio.pause();}catch(e){} refAudio=null; } }
+function playRef(item, rate, onend){
+  stopRef();
+  if(item.au && typeof AUDIO!=='undefined' && AUDIO[item.au]){
+    if(synth) synth.cancel();
+    const a=new Audio(AUDIO[item.au]); a.playbackRate=(rate&&rate<0.8)?0.75:1;
+    if(onend){ a.onended=onend; a.onerror=onend; }
+    refAudio=a; a.play().catch(()=>{ if(onend) onend(); }); return true;
+  }
+  return speak(item.zh, rate, onend);
+}
+function norm(t){ return String(t||'').replace(/[\s\p{P}\p{S}]/gu,''); }
+/* 교재 글자(a) 중 학생이 말한 글자(b)와 순서대로 맞은 글자를 true로 표시 */
+function lcsMark(a,b){
+  const m=a.length, n=b.length;
+  const dp=Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) dp[i][j]= a[i-1]===b[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j],dp[i][j-1]);
+  const hit=new Array(m).fill(false);
+  let i=m, j=n;
+  while(i>0 && j>0){
+    if(a[i-1]===b[j-1]){ hit[i-1]=true; i--; j--; }
+    else if(dp[i-1][j]>=dp[i][j-1]) i--;
+    else j--;
+  }
+  return hit;
+}
+function scoreOf(target, said){
+  const a=[...norm(target)], b=[...norm(said)];
+  if(!a.length) return {sc:0, hit:[]};
+  const hit=lcsMark(a,b);
+  /* 점수 = 맞은 글자 수 ÷ 목표 글자 수 (인식된 글자가 더 많아도 감점하지 않음 → 틀린 글자가 없으면 100점).
+     TODO: 옆 학생 목소리가 섞여 인식된 글자가 길어지는 경우의 안전장치는, 수업에 적용한 결과를 보고 결정하기로 함 */
+  const sc=Math.round(hit.filter(Boolean).length/Math.max(a.length,1)*100);
+  return {sc, hit};
+}
+
+/* 연습할 말: 점수 결과에서 맞지 않은 글자를 이어진 덩어리로 묶어 순서대로 돌려줌 */
+function missedParts(zh, marks){
+  const a=[...norm(zh)], out=[]; let cur='';
+  for(let k=0;k<a.length;k++){
+    if(marks && marks[k]==='0') cur+=a[k];
+    else if(cur){ out.push(cur); cur=''; }
+  }
+  if(cur) out.push(cur);
+  return out;
+}
+
+let micStream=null, micTimer=null;
+
+/* 휴대폰은 녹음(MediaRecorder)과 중국어 인식(SpeechRecognition)이 마이크를 동시에 쓰지 못합니다.
+   PC Chrome은 공유가 되고, 폰은 녹음만 되고 평가는 빈 결과가 됩니다. */
+const isPhone=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function recMime(){
+  if(typeof MediaRecorder==='undefined') return '';
+  const ts=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/aac','audio/ogg;codecs=opus'];
+  return ts.find(t=>MediaRecorder.isTypeSupported(t))||'';
+}
+async function getMic(){
+  clearTimeout(micTimer);
+  if(micStream && micStream.getAudioTracks().some(t=>t.readyState==='live')) return micStream;
+  micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  return micStream;
+}
+function releaseMic(){ clearTimeout(micTimer); if(micStream){ try{micStream.getTracks().forEach(t=>t.stop());}catch(e){} micStream=null; } }
+function armMicIdle(){
+  clearTimeout(micTimer);
+  /* 폰에 마이크를 붙잡아 두면 다음 말하기의 음성 인식이 침묵만 듣습니다 */
+ if(isPhone) releaseMic();
+  else micTimer=setTimeout(releaseMic,120000);
+}
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) releaseMic(); });
+function attachSR(c){
+  if(!SR) return;
+  const bind=cont=>{
+    const rec=new SR();
+    rec.lang='zh-CN';
+    rec.interimResults=true;
+    rec.continuous=cont;
+    rec.maxAlternatives=3;
+    rec.onresult=ev=>{
+      c.srErr='';
+      for(let i=ev.resultIndex;i<ev.results.length;i++){
+        const r=ev.results[i];
+        for(let q=0;q<r.length;q++) c.texts.push(r[q].transcript);
+      }
+      const segs=[];
+      for(let i=0;i<ev.results.length;i++) segs.push(ev.results[i][0].transcript);
+      c.full=segs.join('');
+    };
+    rec.onerror=ev=>{
+      c.srErr=ev.error||'';
+      if(ev.error==='language-not-supported' && rec.lang==='zh-CN'){
+        try{ rec.lang='cmn-Hans-CN'; }catch(e){}
+      }
+    };
+
+    /* 폰은 잠깐 쉬면 인식이 끝나 버립니다. 끝내기 전까지 다시 켭니다 */
+    rec.onend=()=>{
+      if(c.stopping||c.final) return;
+      try{ rec.start(); }catch(e){}
+    };
+    rec.start();
+    c.sr=rec;
+  };
+  try{ bind(true); }
+  catch(e){
+    try{ bind(false); }
+    catch(e2){ c.sr=null; }
+  }
+}
+async function startRecorder(c){
+  try{
+    c.stream=await getMic();
+    if(c.stopping||c.final) return;
+    const mime=recMime();
+    c.mr=mime?new MediaRecorder(c.stream,{mimeType:mime}):new MediaRecorder(c.stream);
+    c.mr.ondataavailable=e=>{ if(e.data && e.data.size) c.chunks.push(e.data); };
+    c.mr.start(250);
+  }catch(e){ c.mr=null; }
+}
+async function startRec(k,i){
+  if(cur) return;
+  const l=lesson(), key=l.id+':'+k+':'+i, s=items(l,k)[i];
+  const pair=String(s.zh).includes('\n');
+  if(synth) synth.cancel();
+  stopRef();
+  const c={key,k,i,lid:l.id,chunks:[],texts:[],full:'',target:s.zh};
+  cur=c; msg[key]=''; renderCard(k,i);
+  /* 클릭과 같은 순간에 인식을 시작해야 아이폰이 허용합니다. await 뒤에 시작하면 평가가 비습니다. */
+  if(isPhone) releaseMic();
+  attachSR(c);
+/* 인식을 먼저 켠 다음 녹음을 켭니다. 폰에서 녹음을 먼저 켜면 평가가 비고, 녹음을 빼면 내 소리·비교하기가 비활성화됩니다. */
+  const recP=startRecorder(c);
+  if(!isPhone) await recP;
+  if(!c.mr && !c.sr){
+    cur=null;
+    msg[key]='noMic';
+    renderCard(k,i); return;
+  }
+  c.timer=setTimeout(stopRec, pair?15000:9000);
+}
+function stopRec(){
+  if(!cur||cur.stopping) return;
+  const c=cur; c.stopping=true; clearTimeout(c.timer);
+  try{ c.sr && c.sr.stop(); }catch(e){}
+  try{ if(c.mr && c.mr.state!=='inactive') c.mr.stop(); }catch(e){}
+  setTimeout(()=>finalize(c), isPhone?1800:1000);
+  renderCard(c.k,c.i);
+}
+/* 말하기 후 평가 영역 문구 (언어별). 메시지는 '키'로 저장하고 화면을 그릴 때 현재 언어로 번역합니다. */
+const EVI18N={
+  ko:{score:'말하기 점수', pts:n=>n+'점', heard:'인식된 말',
+      prac:'연습할 말', hint:'비교하기를 눌러 발음을 비교해 보고, 다시 말해 보세요.',
+      noMic:'마이크를 사용할 수 없어요. 브라우저의 마이크 허용을 확인하거나, 링크를 Chrome/Safari에서 직접 열어 보세요.',
+      notAllowed:'마이크 사용이 허용되지 않았어요. 다시 시도해 보세요.',
+      langUnsupported:'이 휴대폰은 중국어 음성 인식을 지원하지 않아요. Chrome을 쓰거나, 설정에서 중국어(Chinese)를 추가해 보세요.',
+      network:'음성 인식에 연결하지 못했어요. 카카오톡 등 앱 안이 아니라 Chrome 또는 Safari로 “브라우저에서 열기” 해 주세요.',
+      noSpeech:'인식된 말이 없어요. 말하기를 누른 뒤 바로 말해 보세요.',
+      noSR:'이 브라우저는 말하기 점수를 지원하지 않아요. 원어민 소리와 비교해 듣고, 아래 “셀프확인”을 눌러 주세요.'},
+  en:{score:'Speaking score', pts:n=>n+' pts', heard:'Recognized speech',
+      prac:'Words to practice', hint:'Press “Compare” to compare your pronunciation, then try saying it again.',
+      noMic:'Cannot use the microphone. Check the microphone permission in your browser, or open the link directly in Chrome or Safari.',
+      notAllowed:'Microphone use was not allowed. Please try again.',
+      langUnsupported:'This phone does not support Chinese speech recognition. Use Chrome, or add Chinese in your phone settings.',
+      network:'Could not connect to speech recognition. Do not use an in-app browser such as KakaoTalk; choose “Open in browser” and open it in Chrome or Safari.',
+      noSpeech:'No speech was recognized. Press “Speak”, then start speaking right away.',
+      noSR:'This browser does not support the speaking score. Compare with the native pronunciation, then press “Self-check (셀프확인)” below.'},
+  vi:{score:'Điểm nói', pts:n=>n+' điểm', heard:'Nội dung nhận dạng được',
+      prac:'Phần cần luyện', hint:'Bấm “So sánh” để so sánh phát âm, rồi nói lại một lần nữa.',
+      noMic:'Không dùng được micro. Hãy kiểm tra quyền micro của trình duyệt, hoặc mở trực tiếp liên kết bằng Chrome hoặc Safari.',
+      notAllowed:'Chưa được cho phép sử dụng micro. Vui lòng thử lại.',
+      langUnsupported:'Điện thoại này không hỗ trợ nhận dạng giọng nói tiếng Trung. Hãy dùng Chrome hoặc thêm tiếng Trung (Chinese) trong phần cài đặt.',
+      network:'Không kết nối được với tính năng nhận dạng giọng nói. Đừng mở trong ứng dụng như KakaoTalk; hãy chọn “Mở bằng trình duyệt” rồi dùng Chrome hoặc Safari.',
+      noSpeech:'Không nhận dạng được giọng nói. Hãy bấm “Nói” rồi nói ngay.',
+      noSR:'Trình duyệt này không hỗ trợ chấm điểm nói. Hãy so sánh với phát âm của người bản ngữ rồi bấm “Tự xác nhận (셀프확인)” bên dưới.'},
+  mn:{score:'Хэлсэн оноо', pts:n=>n+' оноо', heard:'Танигдсан яриа',
+      prac:'Дасгалжих хэсэг', hint:'“Харьцуулах” товчийг дарж дуудлагаа харьцуулаад, дахин хэлж үзээрэй.',
+      noMic:'Микрофоныг ашиглах боломжгүй байна. Хөтөч дээрээ микрофоны зөвшөөрлийг шалгах, эсвэл холбоосыг Chrome/Safari дээр шууд нээнэ үү.',
+      notAllowed:'Микрофоныг ашиглахыг зөвшөөрөөгүй байна. Дахин оролдоно уу.',
+      langUnsupported:'Энэ утас хятад хэлний дуу хоолой таних боломжгүй байна. Chrome ашиглах эсвэл тохиргооноос хятад хэл (Chinese)-ийг нэмнэ үү.',
+      network:'Дуу хоолой таних үйлчилгээнд холбогдож чадсангүй. KakaoTalk зэрэг апп дотор биш, “Хөтөчөөр нээх”-ийг сонгоод Chrome эсвэл Safari дээр нээнэ үү.',
+      noSpeech:'Яриа танигдсангүй. “Хэлэх” товчийг дараад шууд хэлээрэй.',
+      noSR:'Энэ хөтөч хэлсэн оноог дэмждэггүй. Эх хэлтний дуудлагатай харьцуулж сонсоод доорх “Өөрөө баталгаажуулах (셀프확인)” товчийг дарна уу.'},
+  ja:{score:'話す点数', pts:n=>n+'点', heard:'認識された音声',
+      prac:'練習する言葉', hint:'「聞き比べ」を押して発音を比べてから、もう一度言ってみましょう。',
+      noMic:'マイクを使えません。ブラウザのマイク許可を確認するか、リンクをChromeまたはSafariで直接開いてください。',
+      notAllowed:'マイクの使用が許可されていません。もう一度お試しください。',
+      langUnsupported:'この携帯電話は中国語の音声認識に対応していません。Chromeを使うか、設定で中国語（Chinese）を追加してください。',
+      network:'音声認識に接続できませんでした。KakaoTalkなどのアプリ内ではなく、「ブラウザで開く」を選んでChromeまたはSafariで開いてください。',
+      noSpeech:'音声が認識されませんでした。「話す」を押してから、すぐに話してみましょう。',
+      noSR:'このブラウザでは話す点数がつきません。ネイティブの発音と聞き比べて、下の「自己確認（셀프확인）」を押してください。'}
+};
+const EV=()=>EVI18N[S.lang]||EVI18N.ko;
+function srFailMsg(err){
+  if(err==='not-allowed') return 'notAllowed';
+  if(err==='language-not-supported') return 'langUnsupported';
+  if(err==='network' || err==='service-not-allowed') return 'network';
+  return 'noSpeech';
+}
+function finalize(c){
+  if(c.final) return; c.final=true; if(cur===c) cur=null;
+  armMicIdle();
+  if(c.chunks.length){
+    if(audioURL[c.key]) URL.revokeObjectURL(audioURL[c.key]);
+    audioURL[c.key]=URL.createObjectURL(new Blob(c.chunks,{type:(c.mr&&c.mr.mimeType)||'audio/webm'}));
+  }
+  const d=D(c.lid)[c.k]; d.tried[c.i]=true; d.tc[c.i]=(d.tc[c.i]||0)+1;
+  if(SR){
+    const cands=c.texts.slice(); if(c.full) cands.push(c.full);
+    let best=-1, bt='', bh=[];
+    cands.forEach(t=>{ const r=scoreOf(c.target,t); if(r.sc>best){ best=r.sc; bt=t; bh=r.hit; } });
+    if(best>0){
+      /* 가장 좋았던 시도의 점수·글자 표시·인식된 말을 함께 저장 */
+      if(d.best[c.i]==null || best>d.best[c.i]){
+        d.best[c.i]=best; d.marks[c.i]=bh.map(x=>x?'1':'0').join(''); d.heard[c.i]=bt;
+      }
+      msg[c.key]=''; delete d.fr[c.i];
+    }else{
+      /* 인식된 말이 없거나 맞은 글자가 하나도 없으면(소음만 들어간 경우 포함) 모두 같게: 점수 0점 + "인식된 말이 없어요" 안내.
+         마이크 허용·연결 오류는 각자의 안내를 그대로 보여 주고 점수는 만들지 않음 */
+      const mk=srFailMsg(c.srErr);
+      msg[c.key]=mk;
+      /* 점수가 만들어지지 않은 사유를 문장별로 기록(제출 화면에서 교사가 폰 문제 여부를 볼 수 있게) */
+      if(mk==='noSpeech'){ delete d.fr[c.i]; } else { d.fr[c.i]=mk; }
+      if(mk==='noSpeech' && d.best[c.i]==null){ d.best[c.i]=0; delete d.marks[c.i]; delete d.heard[c.i]; }
+    }
+  }else{
+    msg[c.key]='noSR'; d.fr[c.i]='noSR';
+  }
+  save();
+  if(lesson().id===c.lid){ renderCard(c.k,c.i); renderChips(); }
+}
+
+/* ----- 렌더링 ----- */
+const isPunc=ch=>/[\p{P}\p{S}\s]/u.test(ch);
+/* marks: 글자별 '1'(잘 들림) / '0'(다시 들어 보기) 문자열. 줄바꿈이 있으면 질문/대답 두 줄로 보여 줍니다 */
+function cells(zh, marks){
+  let idx=0;
+  const lines=String(zh).split('\n'), pair=lines.length>1;
+  return lines.map((line,li)=>{
+    const lab=pair?'<span class="lbl">'+(li===0?'질문':'대답')+'</span>':'';
+    const cs=[...line].map(ch=>{
+      if(isPunc(ch)) return '<span class="punc">'+esc(ch)+'</span>';
+      const m=marks?marks[idx]:null; idx++;
+      const cls= m==='1' ? ' hit' : (m==='0' ? ' miss' : '');
+      return '<div class="cell'+cls+'"><span>'+esc(ch)+'</span></div>';
+    }).join('');
+    return lab+'<div class="cells" lang="zh-CN">'+cs+'</div>';
+  }).join('');
+}
+function markedHTML(zh, marks, cG, cM){
+  cG=cG||'gc'; cM=cM||'mc';
+  let idx=0;
+  return [...String(zh)].map(ch=>{
+    if(ch==='\n') return '<br>';
+    if(isPunc(ch)) return esc(ch);
+    const m=marks?marks[idx]:null; idx++;
+    return m==='1' ? '<span class="'+cG+'">'+esc(ch)+'</span>' : (m==='0' ? '<span class="'+cM+'">'+esc(ch)+'</span>' : esc(ch));
+  }).join('');
+}
+function charLists(zh, marks){
+  const good=[], weak=[]; let idx=0;
+  [...String(zh)].forEach(ch=>{
+    if(isPunc(ch)) return;
+    const m=marks?marks[idx]:null; idx++;
+    const arr= m==='1' ? good : (m==='0' ? weak : null);
+    if(arr && !arr.includes(ch)) arr.push(ch);
+  });
+  return {good:good.join(' '), weak:weak.join(' ')};
+}
+function practiceHTML(s,d,i,best,autoOk){
+  if(!autoOk || best>=100) return '';
+  const parts=missedParts(s.zh, d.marks[i]);
+  if(!parts.length) return '';
+  return '<p class="hrd">'+esc(EV().prac)+': <span class="hz2" lang="zh-CN">'+esc(parts.join(' / '))+'</span></p>';
+}
+function cardHTML(l,k,i){
+  const s=items(l,k)[i], key=l.id+':'+k+':'+i, d=D(l.id)[k], best=d.best[i], pass=iPass(l,k,i);
+  const recording=cur && cur.key===key && !cur.stopping;
+  const has=!!audioURL[key];
+  const autoOk = best!=null && best>=l.threshold;
+  const meaning=s[S.lang]||s.ko;
+  let res='';
+  if(best!=null){
+    res='<div class="meter '+(autoOk?'good':'')+'"><i style="width:'+best+'%"></i></div>'+
+        '<p class="scr">'+esc(EV().score)+' <b>'+esc(EV().pts(best))+'</b></p>'+
+        (d.heard[i]?'<p class="hrd">'+esc(EV().heard)+': <span class="hz2" lang="zh-CN">'+esc(d.heard[i])+'</span></p>':'')+
+        practiceHTML(s,d,i,best,autoOk);
+  }
+  const hint=(best!=null && best>0 && best<l.threshold && !msg[key])?'<p class="res">'+esc(EV().hint)+'</p>':'';
+  const m=msg[key]?'<p class="res" style="color:var(--warn)">'+esc(EV()[msg[key]]||'')+'</p>':'';
+  const at='data-k="'+k+'" data-i="'+i+'"';
+  const resetOk = !recording && (best!=null || !!d.tried[i] || !!d.self[i] || has);
+  return '<div class="s '+(pass?'pass':'')+'" id="c'+k+i+'">'+
+    cells(s.zh, d.marks[i])+
+    '<p class="py">'+esc(s.py)+(pass?(autoOk?'<span class="badge">통과</span>':'<span class="badge self">셀프통과</span>'):'')+'</p>'+
+    '<p class="mean">'+esc(meaning)+'</p>'+
+    '<div class="btns bw">'+
+      '<button class="b" data-act="say" '+at+' data-r="1">🔊 '+esc(VT().listen)+'</button>'+
+      (recording ? '<button class="b rec" data-act="stop" '+at+'>'+esc(VT().stop)+'</button>'
+                 : '<button class="b pri" data-act="rec" '+at+'>'+esc(VT().speak)+'</button>')+
+      '<button class="b '+(d.self[i]?'okb':'')+'" data-act="self" '+at+((d.tried[i] && !autoOk)?'':' disabled')+'>'+(d.self[i]?'✔ 확인함':'☐ 셀프확인')+'</button>'+
+      '<button class="b" data-act="say" '+at+' data-r="0.6">🐢 '+esc(VT().slow)+'</button>'+
+      '<button class="b" data-act="cmp" '+at+(has?'':' disabled')+'>'+esc(VT().cmp)+'</button>'+
+      '<button class="b rs" data-act="sreset" '+at+(resetOk?'':' disabled')+'>↺ 리셋</button>'+
+    '</div>'+res+hint+m+
+  '</div>';
+}
+function renderCard(k,i){
+  const l=lesson();
+  const el=$('c'+k+i); if(el) el.outerHTML=cardHTML(l,k,i);
+}
+function listHTML(l,k){
+  return items(l,k).map((_,i)=>cardHTML(l,k,i)).join('');
+}
+
+/* 과 칩(11과 아래 작은 글씨)의 언어별 표시 */
+const CHIPT={
+  ko:{sent:'문장', done:'✔ 통과', prep:'준비 중', wf:'단어 먼저 · 본문 준비 중'},
+  en:{sent:'Sentences', done:'✔ Passed', prep:'Coming soon', wf:'Words first · text coming soon'},
+  vi:{sent:'Câu', done:'✔ Đạt', prep:'Sắp có', wf:'Học từ trước · bài khóa sắp có'},
+  mn:{sent:'Өгүүлбэр', done:'✔ Тэнцсэн', prep:'Бэлтгэж байна', wf:'Эхлээд үг · хичээлийн эх бэлтгэж байна'},
+  ja:{sent:'文', done:'✔ 合格', prep:'準備中', wf:'まず単語 · 本文は準備中'}
+};
+/* 확인창·경고 문구의 언어별 표시 */
+const RT={
+  ko:{all:'모든 과의 연습 기록과 이름을 지울까요?\n(선택한 언어와 반은 그대로 남아요)', one:'이 문장 기록을 지울까요?', rec:'녹음을 먼저 끝내 주세요.', btn:'전체 리셋', name:'이름을 먼저 입력하세요', cls:'반을 먼저 선택하세요'},
+  en:{all:'Delete all practice records for every lesson, and your name?\n(Your selected language and class will stay.)', one:'Delete the record for this sentence?', rec:'Please finish recording first.', btn:'Reset all', name:'Please enter your name first', cls:'Please select your class first'},
+  vi:{all:'Xóa toàn bộ kết quả luyện tập của mọi bài và tên của bạn?\n(Ngôn ngữ và lớp đã chọn vẫn được giữ.)', one:'Xóa kết quả của câu này?', rec:'Hãy kết thúc ghi âm trước.', btn:'Đặt lại tất cả', name:'Hãy nhập tên của bạn trước', cls:'Hãy chọn lớp của bạn trước'},
+  mn:{all:'Бүх хичээлийн дасгалын түүх болон нэрийг устгах уу?\n(Сонгосон хэл болон анги хэвээр үлдэнэ.)', one:'Энэ өгүүлбэрийн түүхийг устгах уу?', rec:'Эхлээд бичлэгээ дуусгана уу.', btn:'Бүгдийг шинэчлэх', name:'Эхлээд нэрээ оруулна уу', cls:'Эхлээд ангиа сонгоно уу'},
+  ja:{all:'すべての課の練習記録と名前を消しますか？\n（選んだ言語とクラスはそのまま残ります）', one:'この文の記録を消しますか？', rec:'先に録音を終えてください。', btn:'すべてリセット', name:'先に名前を入力してください', cls:'先にクラスを選んでください'}
+};
+const RTX=()=>RT[S.lang]||RT.ko;
+/* 과 이름(11과)의 언어별 표시: id 'l11' 의 숫자를 사용 */
+const LTITLE={ko:n=>n+'과', en:n=>'Lesson '+n, vi:n=>'Bài '+n, mn:n=>n+'-р хичээл', ja:n=>'第'+n+'課'};
+function LT(l){ const n=String(l.id).replace(/\D/g,''); return (LTITLE[S.lang]||LTITLE.ko)(n||l.title); }
+const CLSPH={ko:'반', en:'Class', vi:'Lớp', mn:'Анги', ja:'クラス'};
+function renderCls(){
+  const cn=CLSN[S.lang]||CLSN.ko, sel=$('cls'); if(!sel) return;
+  sel.options[0].textContent=CLSPH[S.lang]||CLSPH.ko;
+  for(let i=1;i<sel.options.length;i++) sel.options[i].textContent=cn(sel.options[i].value);
+  sel.value=S.cls||'';
+  sel.classList.toggle('sel',!!S.cls);
+  if(S.cls) sel.classList.remove('need');
+  /* 잠겨 있는 동안 언어·반을 바꾸면 안내문도 바로 바꿈 */
+  const lk=$('lock'); if(timeChecked && lk && !lk.hidden && !isOpenNow()) lk.innerHTML=lockHTML();
+}
+function renderChips(){
+  renderCls();
+  const st=$('subtitle'); if(st) st.textContent=ORDER[S.lang]||ORDER.ko;
+  const CT=CHIPT[S.lang]||CHIPT.ko;
+  const ra=$('rall'); if(ra){ ra.title=RTX().btn; ra.setAttribute('aria-label',RTX().btn); }
+  $('chips').innerHTML=LESSONS.map(l=>{
+    const done=lessonPass(l), gt=cardTotals(l);
+    return '<button class="chip '+(l.id===S.lesson?'on':'')+(done?' done':'')+'" data-act="lesson" data-id="'+l.id+'"><b>'+esc(LT(l))+'</b><span>'+(l.draft?CT.prep:(l.sentences.length?(l.level?esc(l.level)+' · ':'')+(done?CT.done:CT.sent+' '+gt[0]+'/'+gt[1]):CT.wf))+'</span></button>';
+  }).join('');
+  $('langs').innerHTML=Object.keys(LANGS).map(k=>'<button class="lg '+(S.lang===k?'on':'')+'" data-act="lang" data-id="'+k+'">'+LANGS[k]+'</button>').join('');
+}
+
+/* ----- 단어 탭 문구 (언어별) / 단어퀴즈 보기는 모든 언어에서 한글 ----- */
+const VI18N={
+  ko:{listHead:n=>'단어 ('+n+')', quizHead:'단어퀴즈', quizNote:'',
+      result:(x,n,pct)=>'결과: '+n+'문제 중 '+x+'문제 맞힘 ('+pct+'%)', retry:'단어 다시 풀기', tries:(n,t)=>'시도 '+n+'회 · '+t, listen:'듣기',
+      speak:'🎙 말하기', stop:'■ 끝내기', mine:'▶ 내 소리', cmp:'⇄ 비교하기', slow:'천천히',
+      micFail:'마이크를 사용할 수 없어요. 브라우저의 마이크 허용을 확인하세요.',
+      noVoice:'목소리가 들리지 않았어요. 단어를 소리 내어 다시 말해 보세요.'},
+  en:{listHead:n=>'Words ('+n+')', quizHead:'Word quiz (단어퀴즈)', quizNote:'The answer choices are in Korean.',
+      result:(x,n,pct)=>'Result: '+x+' of '+n+' correct ('+pct+'%)', retry:'Try again', tries:(n,t)=>'Attempts: '+n+' · '+t, listen:'Listen',
+      speak:'🎙 Speak', stop:'■ Stop', mine:'▶ My voice', cmp:'⇄ Compare', slow:'Slow',
+      micFail:'Cannot use the microphone. Please allow microphone access in your browser.',
+      noVoice:'We could not hear your voice. Please say the word out loud and try again.'},
+  vi:{listHead:n=>'Từ vựng ('+n+')', quizHead:'Trắc nghiệm từ vựng (단어퀴즈)', quizNote:'Các đáp án bằng tiếng Hàn.',
+      result:(x,n,pct)=>'Kết quả: đúng '+x+'/'+n+' câu ('+pct+'%)', retry:'Làm lại', tries:(n,t)=>'Số lần làm: '+n+' · '+t, listen:'Nghe',
+      speak:'🎙 Nói', stop:'■ Dừng', mine:'▶ Giọng tôi', cmp:'⇄ So sánh', slow:'Chậm',
+      micFail:'Không dùng được micro. Hãy cho phép micro trong trình duyệt.',
+      noVoice:'Không nghe thấy giọng nói. Hãy đọc to từ đó và thử lại.'},
+  mn:{listHead:n=>'Үгс ('+n+')', quizHead:'Үгийн тест (단어퀴즈)', quizNote:'Хариултууд солонгос хэлээр байна.',
+      result:(x,n,pct)=>'Үр дүн: '+n+'-аас '+x+' зөв ('+pct+'%)', retry:'Дахин хийх', tries:(n,t)=>'Оролдлого: '+n+' · '+t, listen:'Сонсох',
+      speak:'🎙 Хэлэх', stop:'■ Зогсоох', mine:'▶ Миний дуу', cmp:'⇄ Харьцуулах', slow:'Удаан',
+      micFail:'Микрофоныг ашиглах боломжгүй байна. Хөтөч дээрээ микрофоныг зөвшөөрнө үү.',
+      noVoice:'Таны дуу сонсогдсонгүй. Үгийг чангаар хэлээд дахин оролдоно уу.'},
+  ja:{listHead:n=>'単語 ('+n+')', quizHead:'単語クイズ（단어퀴즈）', quizNote:'選択肢は韓国語です。',
+      result:(x,n,pct)=>'結果：'+n+'問中'+x+'問正解（'+pct+'％）', retry:'もう一度解く', tries:(n,t)=>'挑戦回数：'+n+'回 · '+t, listen:'聞く',
+      speak:'🎙 話す', stop:'■ 止める', mine:'▶ 自分の声', cmp:'⇄ 聞き比べ', slow:'ゆっくり',
+      micFail:'マイクを使えません。ブラウザでマイクを許可してください。',
+      noVoice:'声が聞こえませんでした。単語を声に出して、もう一度言ってみましょう。'}
+};
+const VT=()=>VI18N[S.lang]||VI18N.ko;
+/* 단어·본문 영역에 보이는 학습 순서 안내 (탭 이름은 한글 그대로 두고 괄호로 뜻을 알려 줌) */
+const ORDER={
+  ko:'① 반·이름 입력 → ② 단어 → ③ 본문 → ④ 퀴즈 순서로 해 보세요.',
+  en:'Order: ① Class & name → ② Words → ③ Text → ④ Quiz',
+  vi:'Thứ tự: ① Lớp & tên → ② Từ vựng → ③ Bài khóa → ④ Trắc nghiệm',
+  mn:'Дараалал: ① Анги, нэр → ② Үгс → ③ Хичээлийн эх → ④ Тест',
+  ja:'順番: ① クラス・名前 → ② 単語 → ③ 本文 → ④ クイズ'
+};
+/* 퀴즈 영역 안내 */
+const QUIZ_GUIDE={
+  ko:'퀴즈를 풀고 제출로 이동하세요.',
+  en:'Solve the quiz, then go to 제출 (Submit).',
+  vi:'Hãy làm bài trắc nghiệm rồi chuyển sang 제출 (Nộp bài).',
+  mn:'Тестийг бөглөөд 제출 (Хүлээлгэн өгөх) хэсэг рүү орно уу.',
+  ja:'クイズを解いてから、제출（提出）に進みましょう。'
+};
+function quizGuideHTML(){ return '<p class="sub">'+esc(QUIZ_GUIDE[S.lang]||QUIZ_GUIDE.ko)+'</p>'; }
+/* 제출 영역 안내 */
+const SUBMIT_GUIDE={
+  ko:'이 화면을 <b>캡처해서 스노우보드(snowboard)에 제출</b>하세요.',
+  en:'Take a screenshot of this screen and <b>submit it on 스노우보드 (Snowboard)</b>.',
+  vi:'Hãy chụp màn hình này và <b>nộp trên 스노우보드 (Snowboard)</b>.',
+  mn:'Энэ дэлгэцийн зургийг аваад <b>스노우보드 (Snowboard) дээр хүлээлгэн өгнө үү</b>.',
+  ja:'この画面を<b>スクリーンショットして、스노우보드（Snowboard）に提出</b>してください。'
+};
+function submitGuideHTML(){ return '<p class="sub">'+(SUBMIT_GUIDE[S.lang]||SUBMIT_GUIDE.ko)+'</p>'; }
+/* 단어 연습 안내 (펼치는 안내 매뉴얼). 버튼 이름은 "외국어 (한글)" 형태로 알려 줌 */
+const VHELP={
+  ko:{title:'단어 연습 안내', items:[
+    '단어를 듣고, 말하기를 클릭한 후 단어를 말하고, 비교하기를 클릭해서 원어민 발음과 비교해 보세요.',
+    '말하기는 끝내기 버튼을 클릭해야 녹음이 완료됩니다.',
+    '단어를 말하면 단어 옆에 v표시가 나타납니다.',
+    '모든 단어 연습이 끝나면 아래 “단어퀴즈”를 풀어보세요.',
+    '단어퀴즈를 끝내면 몇 문제 맞혔는지(%)가 표시됩니다.',
+    '단어퀴즈는 다시 풀기가 가능합니다.']},
+  en:{title:'Word practice guide (단어 연습 안내)', items:[
+    'Listen to the word, press “Speak (말하기)”, say the word, then press “Compare (비교하기)” to compare with the native pronunciation.',
+    'Press “Stop (끝내기)” to finish the recording.',
+    'When you say the word, a “v” mark appears next to the word.',
+    'When you have practiced all the words, do “Word quiz (단어퀴즈)” below.',
+    'When you finish “Word quiz (단어퀴즈)”, you will see how many you got right (%).',
+    'You can retake the Word quiz (단어퀴즈).']},
+  vi:{title:'Hướng dẫn luyện từ vựng (단어 연습 안내)', items:[
+    'Nghe từ, bấm “Nói (말하기)”, đọc từ đó, rồi bấm “So sánh (비교하기)” để so sánh với phát âm của người bản ngữ.',
+    'Phải bấm “Dừng (끝내기)” thì bản ghi âm mới hoàn tất.',
+    'Khi bạn nói từ đó, dấu “v” sẽ xuất hiện bên cạnh từ.',
+    'Khi luyện xong tất cả các từ, hãy làm phần “Trắc nghiệm từ vựng (단어퀴즈)” bên dưới.',
+    'Làm xong phần “Trắc nghiệm từ vựng (단어퀴즈)”, bạn sẽ thấy mình đúng bao nhiêu câu (%).',
+    'Bạn có thể làm lại “Trắc nghiệm từ vựng (단어퀴즈)”.']},
+  mn:{title:'Үгийн дасгалын заавар (단어 연습 안내)', items:[
+    'Үгийг сонсоод “Хэлэх (말하기)” товчийг дарж, үгийг хэлээд, “Харьцуулах (비교하기)” товчийг дарж эх хэлтний дуудлагатай харьцуулаарай.',
+    '“Зогсоох (끝내기)” товчийг дарж байж бичлэг дуусна.',
+    'Үгийг хэлэхэд үгийн хажууд “v” тэмдэг гарч ирнэ.',
+    'Бүх үгийн дасгалыг дуусгасны дараа доорх “Үгийн тест (단어퀴즈)”-г хийгээрэй.',
+    '“Үгийн тест (단어퀴즈)”-ийг дуусгавал хэдэн асуултад зөв хариулсан (%) нь харагдана.',
+    '“Үгийн тест (단어퀴즈)”-г дахин хийж болно.']},
+  ja:{title:'単語練習のご案内 (단어 연습 안내)', items:[
+    '単語を聞いて、「話す（말하기）」を押して単語を言い、「聞き比べ（비교하기）」を押してネイティブの発音と比べましょう。',
+    '「止める（끝내기）」を押すと録音が完了します。',
+    '単語を言うと、単語の横に「v」マークが表示されます。',
+    'すべての単語の練習が終わったら、下の「単語クイズ（단어퀴즈）」を解きましょう。',
+    '「単語クイズ（단어퀴즈）」を終えると、何問正解したか（％）が表示されます。',
+    '「単語クイズ（단어퀴즈）」はやり直すことができます。']}
+};
+/* 단어 말하기를 모두 마치면 “단어퀴즈” 버튼이 열리고, 열면 단어 목록은 접힘 */
+const VGATE={
+  ko:{progress:(x,n)=>'단어 말하기 '+x+' / '+n+' 완료', lock:'모든 단어를 말해 보면 “단어퀴즈”를 시작할 수 있어요.', ready:'단어 말하기를 모두 마쳤어요. 이제 단어퀴즈를 시작하세요.', startBtn:'단어퀴즈'},
+  en:{progress:(x,n)=>'Speaking practice: '+x+' / '+n+' done', lock:'Practice speaking all the words to start “Word quiz (단어퀴즈)”.', ready:'You have finished speaking all the words. Now start “Word quiz (단어퀴즈)”.', startBtn:'단어퀴즈'},
+  vi:{progress:(x,n)=>'Đã luyện nói: '+x+' / '+n+' từ', lock:'Hãy luyện nói tất cả các từ để bắt đầu “Trắc nghiệm từ vựng (단어퀴즈)”.', ready:'Bạn đã luyện nói xong tất cả các từ. Bây giờ hãy bắt đầu “Trắc nghiệm từ vựng (단어퀴즈)”.', startBtn:'단어퀴즈'},
+  mn:{progress:(x,n)=>'Хэлэх дасгал: '+x+' / '+n+' дууссан', lock:'Бүх үгийг хэлж дасгалжсаны дараа “Үгийн тест (단어퀴즈)”-г эхлүүлж болно.', ready:'Бүх үгийг хэлж дасгалжууллаа. Одоо “Үгийн тест (단어퀴즈)”-г эхлүүлээрэй.', startBtn:'단어퀴즈'},
+  ja:{progress:(x,n)=>'話す練習：'+x+' / '+n+' 完了', lock:'すべての単語を話して練習すると、「単語クイズ（단어퀴즈）」を始められます。', ready:'すべての単語を話し終えました。「単語クイズ（단어퀴즈）」を始めましょう。', startBtn:'단어퀴즈'}
+};
+const VG=()=>VGATE[S.lang]||VGATE.ko;
+function wordsDoneCount(l){ const d=D(l.id); return l.vocab.filter((_,i)=>d.wdone[i]).length; }
+function quizOpen(l){ const d=D(l.id); return !!d.qopen || Object.keys(d.vq).length>0; }
+function gateHTML(l){
+  const n=l.vocab.length, x=wordsDoneCount(l), ok=x>=n, G=VG();
+  return '<p class="small" id="qprog">'+esc(G.progress(x,n))+'</p><p class="small" id="qhint">'+esc(ok?G.ready:G.lock)+'</p>'+
+    '<button class="b pri" id="qopenbtn" data-act="qopen"'+(ok?'':' disabled')+'>'+esc(G.startBtn)+'</button>';
+}
+function updGate(){
+  const l=lesson(); if(S.tab!=='vocab' || quizOpen(l)) return;
+  const n=l.vocab.length, x=wordsDoneCount(l), ok=x>=n, G=VG();
+  const p=$('qprog'), h=$('qhint'), b=$('qopenbtn'), w=$('wprog');
+  if(p) p.textContent=G.progress(x,n);
+  if(h) h.textContent=ok?G.ready:G.lock;
+  if(b) b.disabled=!ok;
+  if(w) w.textContent=G.progress(x,n);
+}
+/* 본문 연습 안내 (본문 탭, 펼치는 안내 매뉴얼) */
+const THELP={
+  ko:{title:'본문 연습 안내', items:[
+    '① 듣기 → ② 말하기 → ③ 비교하기 순서로 해 보세요.',
+    '듣기를 누르면 원어민 발화를 들을 수 있습니다. 천천히는 말하는 속도가 느려집니다.',
+    '말하기를 누르고 문장을 말해보세요.',
+    {t:'초록색은 정확히 말한 글자, 붉은색은 연습이 필요한 글자입니다.', sub:['(연습방법1) 비교하기를 눌러 원어민 발음과 비교해 보세요.','(연습방법2) 원어민 발음을 다시 듣고 녹음해서 비교해 보세요.']},
+    '발음하기 어려울 때 셀프확인을 누르면 통과됩니다.',
+    '리셋을 누르면 그 문장의 점수와 녹음 기록이 지워져서, 처음부터 다시 연습할 수 있습니다.']},
+  en:{title:'Text practice guide (본문 연습 안내)', items:[
+    'Please go in this order: ① Listen (듣기) → ② Speak (말하기) → ③ Compare (비교하기).',
+    'Press “Listen (듣기)” to hear the native speaker. “Slow (천천히)” plays it at a slower speed.',
+    'Press “Speak (말하기)” and say the sentence.',
+    {t:'Green marks the characters you said accurately; red marks the characters that need practice.', sub:['(Practice method 1) Press “Compare (비교하기)” to compare your voice with the native pronunciation.','(Practice method 2) Listen to the native pronunciation again, then record yourself and compare.']},
+    'If the pronunciation is too hard, press “Self-check (셀프확인)” and the sentence is marked as passed.',
+    'Press “Reset (리셋)” to erase the score and recording of that sentence, so you can practice it again from the start.']},
+  vi:{title:'Hướng dẫn luyện bài khóa (본문 연습 안내)', items:[
+    'Hãy làm theo thứ tự: ① Nghe (듣기) → ② Nói (말하기) → ③ So sánh (비교하기).',
+    'Bấm “Nghe (듣기)” để nghe người bản ngữ đọc. “Chậm (천천히)” sẽ đọc với tốc độ chậm hơn.',
+    'Bấm “Nói (말하기)” rồi đọc câu.',
+    {t:'Màu xanh lá là chữ bạn nói chính xác, màu đỏ là chữ cần luyện tập thêm.', sub:['(Cách luyện 1) Bấm “So sánh (비교하기)” để so sánh giọng của bạn với phát âm của người bản ngữ.','(Cách luyện 2) Nghe lại phát âm của người bản ngữ, rồi ghi âm và so sánh.']},
+    'Nếu phát âm quá khó, bấm “Tự xác nhận (셀프확인)” thì câu sẽ được tính là đạt.',
+    'Bấm “Đặt lại (리셋)” để xóa điểm và bản ghi âm của câu đó, rồi luyện lại từ đầu.']},
+  mn:{title:'Хичээлийн эхийн дасгалын заавар (본문 연습 안내)', items:[
+    'Дараах дарааллаар хийнэ үү: ① Сонсох (듣기) → ② Хэлэх (말하기) → ③ Харьцуулах (비교하기).',
+    '“Сонсох (듣기)” товчийг дарвал эх хэлтний дуудлагыг сонсоно. “Удаан (천천히)” нь хурдыг удаашруулна.',
+    '“Хэлэх (말하기)” товчийг дараад өгүүлбэрээ хэлээрэй.',
+    {t:'Ногоон нь үнэн зөв хэлсэн иероглиф, улаан нь дасгал хэрэгтэй иероглиф юм.', sub:['(Дасгалын арга 1) “Харьцуулах (비교하기)” товчийг дарж эх хэлтний дуудлагатай харьцуулаарай.','(Дасгалын арга 2) Эх хэлтний дуудлагыг дахин сонсоод, бичлэг хийж харьцуулаарай.']},
+    'Дуудлага хэтэрхий хэцүү бол “Өөрөө баталгаажуулах (셀프확인)” товчийг дарвал тэнцсэнд тооцогдоно.',
+    '“Дахин тохируулах (리셋)” товчийг дарвал тухайн өгүүлбэрийн оноо болон бичлэг устах тул эхнээс нь дахин дасгалжиж болно.']},
+  ja:{title:'本文練習のご案内 (본문 연습 안내)', items:[
+    '次の順番でやってみましょう：① 聞く（듣기）→ ② 話す（말하기）→ ③ 聞き比べ（비교하기）。',
+    '「聞く（듣기）」を押すとネイティブの発音が聞けます。「ゆっくり（천천히）」は話す速さが遅くなります。',
+    '「話す（말하기）」を押して、文を言ってみましょう。',
+    {t:'緑は正確に言えた文字、赤は練習が必要な文字です。', sub:['（練習方法1）「聞き比べ（비교하기）」を押して、ネイティブの発音と比べましょう。','（練習方法2）ネイティブの発音をもう一度聞いてから、録音して比べてみましょう。']},
+    '発音が難しいときは、「自己確認（셀프확인）」を押すと合格になります。',
+    '「リセット（리셋）」を押すと、その文の点数と録音の記録が消えて、最初からやり直せます。']}
+};
+function textHelpHTML(){
+  const H=THELP[S.lang]||THELP.ko;
+  return '<details class="help"><summary>'+esc(H.title)+'</summary><ol>'+H.items.map(it=>
+    typeof it==='string' ? '<li>'+esc(it)+'</li>'
+      : '<li>'+esc(it.t)+'<ul>'+it.sub.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></li>').join('')+'</ol></details>';
+}
+function vocabHelpHTML(){
+  const H=VHELP[S.lang]||VHELP.ko;
+  return '<details class="help"><summary>'+esc(H.title)+'</summary><ol>'+H.items.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol></details>';
+}
+
+/* 단어 말하기: 점수·판정 없이 녹음 → 내 소리 듣기 → 원어민과 비교 (음성 인식은 쓰지 않음) */
+/* 실제로 소리가 난 경우에만 ✔ 표시: 녹음 중 마이크 음량을 재서 목소리가 없으면 완료 처리하지 않음.
+   너무 예민하면 VOICE_RMS 값을 낮추고(예 0.02), 조용한 소리도 통과되면 높이세요(예 0.05). */
+const VOICE_RMS=0.03, VOICE_FRAMES=4;
+function watchVoice(c){
+  c.meter=false; c.voiced=0;
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    const ctx=new AC(); if(ctx.resume) ctx.resume();
+    const src=ctx.createMediaStreamSource(c.stream), an=ctx.createAnalyser();
+    an.fftSize=1024; src.connect(an);
+    const buf=new Uint8Array(an.fftSize);
+    c.meter=true;
+    c.vt=setInterval(()=>{
+      try{
+        an.getByteTimeDomainData(buf);
+        let sum=0; for(let k=0;k<buf.length;k++){ const v=(buf[k]-128)/128; sum+=v*v; }
+        if(Math.sqrt(sum/buf.length)>VOICE_RMS) c.voiced++;
+      }catch(e){ c.meter=false; }
+    },50);
+    c.vstop=()=>{ clearInterval(c.vt); try{src.disconnect();}catch(e){} try{ctx.close();}catch(e){} };
+  }catch(e){ c.meter=false; }
+}
+let wcur=null; const wmsg={};
+function vwHTML(l,i){
+  const w=l.vocab[i], T=VT(), key=l.id+':v:'+i;
+  const rec=!!(wcur && wcur.key===key && !wcur.stopping), has=!!audioURL[key];
+  const meaning=esc(w[S.lang]||w.ko);
+  const m=wmsg[key]?'<p class="res" style="color:var(--warn)">'+esc(VT()[wmsg[key]]||'')+'</p>':'';
+  return '<div class="vw vg" id="vw'+i+'">'+
+    '<div class="vg-a"><b class="hz" lang="zh-CN">'+esc(w.zh)+'</b><span class="py2">'+esc(w.py)+'</span>'+(D(l.id).wdone[i]?'<span class="okmark">✔</span>':'')+'</div>'+
+    '<button class="b" data-act="vsay" data-i="'+i+'">🔊 '+esc(T.listen)+'</button>'+
+    (rec?'<button class="b rec" data-act="wstop" data-i="'+i+'">'+esc(T.stop)+'</button>':'<button class="b pri" data-act="wrec" data-i="'+i+'">'+esc(T.speak)+'</button>')+
+    '<span class="vg-m">'+meaning+'</span>'+
+    '<button class="b vg-c" data-act="wcmp" data-i="'+i+'"'+(has?'':' disabled')+'>'+esc(T.cmp)+'</button>'+
+    m+'</div>';
+}
+function renderWord(i){ const l=lesson(), el=$('vw'+i); if(el && l.vocab[i]) el.outerHTML=vwHTML(l,i); }
+async function startWord(i){
+  if(wcur||cur) return;
+  const l=lesson(), key=l.id+':v:'+i;
+  if(synth) synth.cancel();
+  stopRef();
+  const c={key,i,lid:l.id,chunks:[]};
+  wcur=c; wmsg[key]=''; renderWord(i);
+  try{
+    c.stream=await getMic();
+    const mime=recMime();
+    c.mr=mime?new MediaRecorder(c.stream,{mimeType:mime}):new MediaRecorder(c.stream);
+    c.mr.ondataavailable=e=>{ if(e.data && e.data.size) c.chunks.push(e.data); };
+    c.mr.onstop=()=>finishWord(c);
+    c.mr.start(250);
+    watchVoice(c);
+  }catch(e){
+    wcur=null; wmsg[key]='micFail';
+    /* 마이크를 쓸 수 없는 폰에서도 막히지 않도록 이 단어는 말하기 완료로 처리 (선생님이 대면에서 확인) */
+    D(l.id).wdone[i]=true; save();
+    renderWord(i); updGate(); return;
+  }
+  c.timer=setTimeout(stopWord,4000);
+}
+function stopWord(){
+  const c=wcur; if(!c||c.stopping) return;
+  c.stopping=true; clearTimeout(c.timer);
+  try{ if(c.mr && c.mr.state!=='inactive') c.mr.stop(); else finishWord(c); }catch(e){ finishWord(c); }
+  if(lesson().id===c.lid) renderWord(c.i);
+}
+function finishWord(c){
+  if(c.done) return; c.done=true; if(wcur===c) wcur=null;
+  armMicIdle();
+  if(c.vstop) c.vstop();
+  if(c.chunks.length){
+    if(audioURL[c.key]) URL.revokeObjectURL(audioURL[c.key]);
+    audioURL[c.key]=URL.createObjectURL(new Blob(c.chunks,{type:(c.mr&&c.mr.mimeType)||'audio/webm'}));
+    /* 음량 감지가 되는 기기에서는 목소리가 있었을 때만 완료, 감지가 안 되는 기기는 예전처럼 완료 처리 */
+    const heard=c.meter ? c.voiced>=VOICE_FRAMES : true;
+    if(heard){ D(c.lid).wdone[c.i]=true; save(); }
+    else wmsg[c.key]='noVoice';
+  }
+  if(lesson().id===c.lid && S.tab==='vocab'){ renderWord(c.i); updGate(); }
+}
+function renderTabs(){
+  const T=tabsOf(lesson());
+  if(!T.some(t=>t[0]===S.tab)) S.tab='vocab';
+  $('tabs').innerHTML=T.map(t=>'<button class="'+(S.tab===t[0]?'on':'')+'" data-act="tab" data-id="'+t[0]+'"><em>'+t[1]+'</em>'+t[2]+'</button>').join('');
+}
+/* 마이크 허용 안내 (언어별, 외국어 화면에는 한국어를 넣지 않음) */
+const MICHELP={
+  ko:{title:'마이크 허용 창이 자꾸 뜨나요?', items:[
+    '창이 뜨면 “이번에만”이 아니라 “허용”(방문 중 허용)을 고르세요.',
+    '안드로이드 Chrome: 주소창 왼쪽 아이콘 → 권한 → 마이크 → 허용',
+    '아이폰 Safari: 주소창 aA → 웹사이트 설정 → 마이크 → 허용',
+    '카카오톡 같은 앱 안에서 열면 허용이 저장되지 않을 수 있어요. “다른 브라우저로 열기”로 Chrome이나 Safari에서 여세요.']},
+  en:{title:'Does the microphone permission window keep popping up?', items:[
+    'When the window appears, choose “Allow” (allow while visiting the site), not “Only this time”.',
+    'Android Chrome: icon on the left of the address bar → Permissions → Microphone → Allow',
+    'iPhone Safari: aA in the address bar → Website Settings → Microphone → Allow',
+    'If you open this page inside an app such as KakaoTalk, the permission may not be saved. Choose “Open in another browser” and open it in Chrome or Safari.']},
+  vi:{title:'Cửa sổ xin quyền micro cứ hiện lên mãi?', items:[
+    'Khi cửa sổ hiện ra, hãy chọn “Cho phép” (cho phép khi truy cập trang), đừng chọn “Chỉ lần này”.',
+    'Chrome trên Android: biểu tượng bên trái thanh địa chỉ → Quyền → Micrô → Cho phép',
+    'Safari trên iPhone: aA trên thanh địa chỉ → Cài đặt trang web → Micrô → Cho phép',
+    'Nếu mở trang này trong ứng dụng như KakaoTalk, quyền có thể không được lưu. Hãy chọn “Mở bằng trình duyệt khác” rồi mở bằng Chrome hoặc Safari.']},
+  mn:{title:'Микрофоны зөвшөөрлийн цонх байнга гарч ирж байна уу?', items:[
+    'Цонх гарч ирвэл “Зөвхөн энэ удаа” биш, “Зөвшөөрөх” (сайтад зочилж байх хугацаанд зөвшөөрөх)-ийг сонгоно уу.',
+    'Android Chrome: хаягийн мөрний зүүн талын дүрс → Зөвшөөрөл → Микрофон → Зөвшөөрөх',
+    'iPhone Safari: хаягийн мөрөн дэх aA → Вэбсайтын тохиргоо → Микрофон → Зөвшөөрөх',
+    'KakaoTalk зэрэг апп дотор нээвэл зөвшөөрөл хадгалагдахгүй байж магадгүй. “Өөр хөтчөөр нээх”-ийг сонгоод Chrome эсвэл Safari дээр нээнэ үү.']},
+  ja:{title:'マイクの許可ウィンドウが何度も表示されますか？', items:[
+    'ウィンドウが表示されたら、「今回のみ」ではなく「許可」（サイト訪問中は許可）を選んでください。',
+    'Android Chrome：アドレスバー左のアイコン → 権限 → マイク → 許可',
+    'iPhone Safari：アドレスバーのaA → Webサイトの設定 → マイク → 許可',
+    'KakaoTalkなどのアプリ内で開くと、許可が保存されないことがあります。「他のブラウザで開く」を選び、ChromeまたはSafariで開いてください。']}
+};
+function micHelpHTML(){
+  const H=MICHELP[S.lang]||MICHELP.ko;
+  return '<details class="help"><summary>'+esc(H.title)+'</summary><ul>'+H.items.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul></details>';
+}
+function drillView(l,k){
+  let h='';
+  const arr=items(l,k);
+  if(!arr.length) return '<div class="card2"><h2>'+KLABEL[k]+' 준비 중</h2><p>곧 등록돼요. 먼저 <b>단어 탭</b>에서 연습하세요.</p></div>';
+  if(synth && voicesKnown>0 && !zhVoice) h+='<div class="notice">이 휴대폰에 중국어 음성이 없을 수 있어요. 소리가 안 나면 휴대폰 설정에서 중국어(Chinese) 음성을 설치해 주세요.</div>';
+  if(!SR) h+='<div class="notice">이 브라우저는 자동 점수를 지원하지 않아요. 녹음 후 원어민 소리와 비교하고 “스스로 확인”으로 통과하세요. (자동 점수는 휴대폰 Chrome에서 가장 잘 됩니다.)</div>';
+  else if(isPhone) h+='<div class="notice">휴대폰에서는 말하기 점수를 위해 음성 인식을 먼저 씁니다. 카카오톡 등이 아니라 Chrome(안드로이드) 또는 Safari(아이폰)로 열어 주세요. 비교하기 파일은 PC에서 함께 저장됩니다.</div>';
+    h+=micHelpHTML();
+  return h+textHelpHTML()+listHTML(l,k);
+}
+function renderView(){
+  const l=lesson(), d=D(l.id); let h='';
+  if(!l.sentences.length && !l.vocab.length){
+    $('view').innerHTML='<div class="card2"><h2>'+esc(LT(l))+' '+(CHIPT[S.lang]||CHIPT.ko).prep+'</h2><p>본문과 단어가 아직 등록되지 않았어요. 선생님이 등록하면 여기에 나타납니다.</p></div>';
+    return;
+  }
+  if(S.tab==='quiz' && !l.quiz.length){ $('view').innerHTML='<div class="card2"><h2>퀴즈 준비 중</h2><p>곧 등록돼요. 먼저 단어 탭에서 연습하세요.</p></div>'; return; }
+  if(S.tab==='practice') h+=drillView(l,'p');
+  if(S.tab==='vocab'){
+    const n=l.vocab.length, k=Math.min(4,n), T=VT();
+    if(!n){ $('view').innerHTML='<div class="card2"><h2>단어 준비 중</h2><p>곧 등록돼요.</p></div>'; return; }
+    const optsOf=i=>{ const o=[]; for(let j=0;j<k;j++) o.push((i+j)%n); const r=(i*3+1)%k; return o.slice(r).concat(o.slice(0,r)); };
+    h+=vocabHelpHTML();
+    const open=quizOpen(l), G=VG();
+    h+='<details class="card2 wl" id="wl"'+(open?'':' open')+'><summary>'+esc(T.listHead(n))+' <span class="small" id="wprog">'+esc(G.progress(wordsDoneCount(l),n))+'</span></summary>'+l.vocab.map((w,i)=>vwHTML(l,i)).join('')+'</details>';
+    if(!open){
+      h+='<div class="card2"><h2>'+esc(T.quizHead)+'</h2>'+gateHTML(l)+'</div>';
+    }else{
+      h+='<div class="card2" id="vquiz"><h2>'+esc(T.quizHead)+'</h2>'+(T.quizNote?'<p class="small">'+esc(T.quizNote)+'</p>':'');
+      l.vocab.forEach((w,i)=>{
+        const a=d.vq[i];
+        h+='<div class="q"><p>'+(i+1)+'. <span class="hz" lang="zh-CN">'+esc(w.zh)+'</span><span class="py2">'+esc(w.py)+'</span></p>'+optsOf(i).map(oi=>{
+          let cls=''; if(a!=null){ if(oi===i) cls='right'; else if(oi===a) cls='wrong'; }
+          return '<button class="o '+cls+'" data-act="vans" data-q="'+i+'" data-o="'+oi+'">'+esc(l.vocab[oi].ko)+'</button>';
+        }).join('')+'</div>';
+      });
+      if(vocabDone(l)){ const H=histText(l); h+='<p><b>'+esc(T.result(vocabScore(l),n,vocabPct(l)))+'</b><br><span class="small">'+esc(T.tries(H.count,H.text))+'</span></p><button class="reset" data-act="vreset">'+esc(T.retry)+'</button>'; }
+      h+='</div>';
+    }
+  }
+  if(S.tab==='quiz'){
+    h+=quizGuideHTML();
+    h+='<div class="card2"><h2>확인 문제</h2>';
+    l.quiz.forEach((q,qi)=>{
+      const a=d.quiz[qi];
+      h+='<div class="q"><p>'+(qi+1)+'. '+esc(q.q)+'</p>'+q.o.map((o,oi)=>{
+        let cls=''; if(a!=null){ if(oi===q.a) cls='right'; else if(oi===a) cls='wrong'; }
+        return '<button class="o '+cls+'" data-act="ans" data-q="'+qi+'" data-o="'+oi+'">'+esc(o)+'</button>';
+      }).join('')+'</div>';
+    });
+    if(quizDone(l)) h+='<p><b>결과: '+quizScore(l)+' / '+l.quiz.length+'</b></p><button class="reset" data-act="quizreset">문제 다시 풀기</button>';
+    h+='</div>';
+  }
+  if(S.tab==='card'){
+    const ok=lessonPass(l);
+    const kinds=['p'];
+    const todo=[], helpItems=[];
+    if(!vocabDone(l)) todo.push('단어 퀴즈 마무리 필요');
+    let rows='';
+    kinds.forEach(k=>{
+      const dk=d[k], arr=items(l,k);
+      const spoken=i=>dk.best[i]!=null && dk.best[i]>=l.threshold;          /* 발화로 통과(60점 이상) */
+      const selfOnly=i=>!spoken(i) && !!dk.self[i];                        /* 셀프확인으로 통과 */
+      rows+='<div class="kv"><span>'+KLABEL[k]+'</span><span>'+arr.filter((_,i)=>spoken(i)).length+' / '+arr.length+' 통과</span></div>'+
+            '<div class="kv"><span>'+KLABEL[k]+' 셀프확인</span><span>'+arr.filter((_,i)=>selfOnly(i)).length+' / '+arr.length+'</span></div>';
+      arr.forEach((s,i)=>{
+        const b=dk.best[i], n=dk.tc&&dk.tc[i]||0;
+        if(!spoken(i)){
+          const parts=[], tried=!!dk.tried[i], why=FAILWHY[dk.fr&&dk.fr[i]];
+          if(b!=null) parts.push('최고 '+b+'점');
+          else if(tried) parts.push('점수 없음'+(why?': '+why:''));
+          else parts.push('아직 안 함');
+          if(n>0) parts.push(n+'회 시도');
+          if(dk.self[i]) parts.push('셀프 확인');
+          todo.push(KLABEL[k]+': “'+String(s.zh).replace(/\n/g,' ')+'” ('+parts.join(', ')+')');
+        }
+        /* 연습이 필요한 문장: 발화로 말해 본 문장 중 어려워한 글자가 있는 것 (셀프확인 통과·안 해 본 문장은 제외) */
+        if(b!=null && !selfOnly(i)){
+          const cl=charLists(s.zh, dk.marks[i]);
+          if(cl.weak || (b<l.threshold && cl.good)) helpItems.push({k,i,s,b,n});
+        }
+      });
+    });
+    if(!l.sentences.length) todo.push('본문은 준비 중이에요');
+    if(!quizDone(l)) todo.push('퀴즈를 모두 풀어 주세요');
+    else l.quiz.forEach((q,qi)=>{ if(d.quiz[qi]!==q.a) todo.push('퀴즈 '+(qi+1)+'번 틀림'); });
+    const helpHTML=helpItems.length?
+      '<p style="margin:12px 0 2px"><b>연습이 필요한 문장</b></p><ul class="todo">'+helpItems.map(o=>{
+        const mk=D(l.id)[o.k].marks[o.i];
+        return '<li>['+KLABEL[o.k]+'] <span lang="zh-CN">'+markedHTML(o.s.zh, mk, 'hb', 'hr')+'</span> (최고 '+o.b+'점'+(o.n>0?', '+o.n+'회 시도':'')+')</li>';
+      }).join('')+'</ul><p class="small">표시는 음성 인식 결과를 바탕으로 한 참고용입니다.</p>':'';
+    h+=submitGuideHTML()+
+      '<div class="card2"><div class="stamp '+(ok?'':'no')+'"><b>'+(ok?'통과 PASS ✔':'진행 중')+'</b><span>'+esc(LT(l))+(l.level?' ('+esc(l.level)+')':'')+'</span></div>'+
+      '<div class="kv"><span>이름</span><span>'+esc(S.name||'(이름을 위에 입력하세요)')+'</span></div>'+
+      '<div class="kv"><span>반</span><span>'+(S.cls?esc(S.cls)+'반':'(반을 위에서 선택하세요)')+'</span></div>'+
+      '<div class="kv"><span>단어퀴즈</span><span>'+(l.vocab.length?(vocabDone(l)?vocabScore(l)+' / '+l.vocab.length+' 맞힘 ('+vocabPct(l)+'%)':'미완료'):'-')+'</span></div>'+
+      (l.vocab.length && vocabDone(l)?'<div class="kv"><span>단어퀴즈 시도</span><span>'+histText(l).count+'회 ('+esc(histText(l).text)+')</span></div>':'')+
+      rows+
+      '<div class="kv"><span>퀴즈</span><span>'+(l.quiz.length?(quizDone(l)?quizScore(l)+' / '+l.quiz.length:'미완료'):'-')+'</span></div>'+
+      '<div class="kv"><span>연습 시간</span><span>'+esc(practiceTimeText(d))+'</span></div>'+
+      '<div class="kv"><span>일시</span><span>'+esc(new Date(nowMs()).toLocaleString('ko-KR',{timeZone:'Asia/Seoul'}))+'</span></div>'+
+      (todo.length?'<p style="margin:12px 0 2px"><b>부족한 점</b></p><ul class="todo">'+todo.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'')+
+      helpHTML+
+      '</div>';
+  }
+  $('view').innerHTML=h;
+}
+function practiceTimeText(d){
+  const pt=d.pt; if(!pt||!pt.f) return '기록 없음';
+  const a=kstParts(pt.f), b=kstParts(pt.l||pt.f), f=p=>pad2(p.m)+'/'+pad2(p.d)+' '+pad2(p.hh)+':'+pad2(p.mm);
+  let t=kstYmd(a)===kstYmd(b) ? f(a)+' ~ '+pad2(b.hh)+':'+pad2(b.mm) : f(a)+' ~ '+f(b);
+  const cs=(pt.c||'').split(',').filter(Boolean);
+  if(cs.length && (cs.length>1 || cs[0]!==S.cls)) t+=' · 연습한 반: '+cs.map(c=>c+'반').join('·');
+  return t;
+}
+function render(){ renderTabs(); renderChips(); renderView(); }
+
+/* ----- 이벤트 ----- */
+const NAME_PH='이름 / Name / Tên / Нэр / 名前';
+function syncNameUI(){
+  const has=!!(S.name||'').trim();
+  if(has){ $('name').classList.remove('need'); $('name').placeholder=NAME_PH; }
+}
+/* 이름이 비어 있으면 말하기·퀴즈를 막고 이름 칸에 안내를 보여 줍니다 */
+function needClass(){
+  if(S.cls) return false;
+  $('cls').classList.add('need'); window.scrollTo(0,0); alert(RTX().cls);
+  return true;
+}
+function needName(){
+  if(S.name && S.nameDate!==todayStr()){ S.name=''; S.nameDate=''; $('name').value=''; save(); }
+  if((S.name||'').trim()) return false;
+  const n=$('name'); n.classList.add('need'); n.placeholder=RTX().name;
+  window.scrollTo(0,0); try{ n.focus(); }catch(e){}
+  return true;
+}
+$('name').value=S.name||'';
+syncNameUI();
+$('cls').addEventListener('change',e=>{
+  if(cur||wcur){ alert(RTX().rec); e.target.value=S.cls||''; return; }
+  S.cls=e.target.value; save(); renderCls(); applyLock();
+});
+$('name').addEventListener('blur',e=>{ e.target.scrollLeft=0; });
+$('name').addEventListener('input',e=>{ S.name=e.target.value; S.nameDate=(S.name.trim()?todayStr():''); save(); syncNameUI(); });
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b||b.disabled) return;
+  const a=b.dataset.act, l=lesson(), i=+b.dataset.i, k=b.dataset.k, d=D(l.id);
+  if(['rec','wrec','vans','ans','qopen'].includes(a)){ if(needClass()||needName()) return; stampPractice(l.id); }
+  if(a==='tab'){ if(wcur) stopWord(); S.tab=b.dataset.id; if(S.tab!=='practice') releaseMic(); save(); render(); window.scrollTo(0,0); }
+  else if(a==='lesson'){ if(cur) stopRec(); if(wcur) stopWord(); S.lesson=b.dataset.id; save(); render(); }
+  else if(a==='lang'){ S.lang=b.dataset.id; save(); renderChips(); renderView(); }
+  else if(a==='say'){ playRef(items(l,k)[i], +b.dataset.r); }
+  else if(a==='rec'){ startRec(k,i); }
+  else if(a==='stop'){ stopRec(); }
+  else if(a==='mine'){ playMine(l.id+':'+k+':'+i); }
+  else if(a==='cmp'){ const key=l.id+':'+k+':'+i; if(!playRef(items(l,k)[i],0.9,()=>setTimeout(()=>playMine(key),300))) playMine(key); }
+  else if(a==='self'){ { const bs=d[k].best[i]; if(bs!=null && bs>=l.threshold) return; } d[k].self[i]=!d[k].self[i]; save(); renderCard(k,i); renderChips(); }
+  else if(a==='resetall'){
+    if(cur||wcur){ alert(RTX().rec); return; }
+    if(!confirm(RTX().all)) return;
+    Object.keys(audioURL).forEach(k=>{ try{ URL.revokeObjectURL(audioURL[k]); }catch(e){} delete audioURL[k]; });
+    Object.keys(msg).forEach(k=>delete msg[k]); Object.keys(wmsg).forEach(k=>delete wmsg[k]);
+    /* 단어퀴즈 시도 기록(vh)은 '단어 다시 풀기'처럼 전체 리셋에서도 남깁니다 */
+    /* 본문 시도 횟수(tc)도 같은 이유로 남깁니다 */
+    const keep={}; Object.keys(S.data||{}).forEach(id=>{
+      const dd=S.data[id]||{}, h=dd.vh, tc=dd.p&&dd.p.tc;
+      const hasTc=tc && Object.keys(tc).length, pt=dd.pt;
+      if((h&&h.length)||hasTc||pt){ keep[id]={}; if(h&&h.length) keep[id].vh=h.slice(); if(hasTc){ keep[id].p=blank(); keep[id].p.tc=Object.assign({},tc); } if(pt) keep[id].pt=Object.assign({},pt); }
+    });
+    S.data=keep; S.name=''; S.nameDate='';
+    $('name').value=''; $('name').classList.remove('need'); $('name').placeholder=NAME_PH;
+    save(); render(); window.scrollTo(0,0);
+  }
+  else if(a==='sreset'){
+    const key=l.id+':'+k+':'+i, dd=d[k];
+    if(cur && cur.key===key) return;
+    if(iPass(l,k,i) && !confirm(RTX().one)) return;
+    delete dd.best[i]; delete dd.tried[i]; delete dd.self[i]; delete dd.marks[i]; delete dd.heard[i]; if(dd.fr) delete dd.fr[i];
+    if(audioURL[key]){ try{ URL.revokeObjectURL(audioURL[key]); }catch(e){} delete audioURL[key]; }
+    delete msg[key];
+    save(); renderCard(k,i); renderChips();
+  }
+  else if(a==='ans'){ const q=+b.dataset.q; if(d.quiz[q]==null){ d.quiz[q]=+b.dataset.o; save(); renderView(); renderChips(); } }
+  else if(a==='quizreset'){ d.quiz={}; save(); renderView(); renderChips(); }
+  else if(a==='vsay'){ playRef(l.vocab[i], 1); }
+  else if(a==='qopen'){ if(wordsDoneCount(l)>=l.vocab.length){ d.qopen=true; save(); renderView(); const q=$('vquiz'); if(q) q.scrollIntoView({block:'start'}); } }
+  else if(a==='wrec'){ startWord(i); }
+  else if(a==='wstop'){ stopWord(); }
+  else if(a==='wmine'){ playMine(l.id+':v:'+i); }
+  else if(a==='wcmp'){ const key=l.id+':v:'+i; if(!playRef(l.vocab[i],0.9,()=>setTimeout(()=>playMine(key),300))) playMine(key); }
+  else if(a==='vans'){ const q=+b.dataset.q; if(d.vq[q]==null){ d.vq[q]=+b.dataset.o; if(vocabDone(l)) d.vh.push(vocabScore(l)); save(); renderView(); renderChips(); } }
+  else if(a==='vreset'){ d.vq={}; save(); renderView(); renderChips(); }
+});
+render();
+/* 시작: 서버 시각을 먼저 확인한 뒤 열고, 이후 수업 시간이 끝나면 자동으로 잠급니다 */
+syncTime().finally(()=>{ applyLock(); });
+setInterval(applyLock,20000);
+setInterval(()=>{ syncTime().then(applyLock); },300000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) syncTime().then(applyLock); });
+</script>
+</body>
+</html>
