@@ -143,6 +143,17 @@ button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{
 .cell.hit{border-color:var(--ok);background-color:var(--ok-soft)}
 .cell.miss{border-color:var(--warn);border-style:dashed;background-color:var(--warn-soft)}
 .py,.mean{white-space:pre-line}
+/* 본문 카드 공통(한국어·베트남어·몽골어·일본어): 한자 사각형 틀 없이 간격은 유지, 병음은 크게 */
+.s .cells{gap:6px;margin:2px 0 8px}
+.s .cell{width:auto;height:auto;display:inline;border:0;border-radius:0;background:none;font-size:24px;line-height:1.4}
+.s .punc{align-self:auto;padding-bottom:0;font-size:24px;line-height:1.4;color:inherit}
+.s .py{font-size:18px}
+.s.tight .cells{gap:4px}   /* 글자 수가 많은 문장은 간격을 줄여 한 줄에 */
+/* 중국어를 선택했을 때 본문 카드: 한자 칸·병음 없이 문장을 이어서, 한글 번역을 크게 */
+.s.zhmode .cells{gap:0;margin:2px 0 8px}
+.s.zhmode .cell{width:auto;height:auto;display:inline;border:0;border-radius:0;background:none;font-size:24px;line-height:1.4}
+.s.zhmode .punc{align-self:auto;padding-bottom:0;font-size:24px;line-height:1.4;color:inherit}
+.s.zhmode .mean{font-size:18px;line-height:1.5}
 .hr{color:var(--tb);font-weight:700;text-decoration:underline dotted}
 .help ol{margin:8px 0 2px;padding-left:20px}
 .wl>summary{cursor:pointer;font-size:16px;font-weight:800;margin-bottom:6px}
@@ -1176,6 +1187,18 @@ function speak(text, rate, onend){
 }
 const audioURL={}, msg={};
 let playing=null;
+/* 말하기 없이 비교하기를 눌렀을 때 문구 (단어·본문 공통) */
+const NOREC={ko:'먼저 말하기를 하세요.', zh:'请先说一说。', vi:'Hãy nói trước đã.', mn:'Эхлээд хэлж үзээрэй.', ja:'まず話してみてください。'};
+const noRecMsg=()=>NOREC[S.lang]||NOREC.ko;
+/* 비교 재생: 원어민 → 내 녹음. 다시 누르거나 듣기·말하기를 누르면 이전 재생은 멈춥니다 */
+let cmpTok=0;
+function stopCompare(){ cmpTok++; if(playing){ try{playing.pause();}catch(e){} playing=null; } }
+function runCompare(item,rate,key){
+  stopCompare(); const tok=cmpTok;
+  if(synth) synth.cancel(); stopRef();
+  const mine=()=>{ if(tok!==cmpTok) return; playMine(key,null); };
+  if(!playRef(item,rate,()=>{ if(tok!==cmpTok) return; setTimeout(mine,300); })) mine();
+}
 /* 내 소리 재생. onend: 끝까지 재생됐을 때(재생이 안 될 때도) 부르는 함수 */
 function playMine(key,onend){
   if(!audioURL[key]){ if(onend) onend(); return; }
@@ -1205,6 +1228,7 @@ let sayBtn=null, sayTok=0;
 function setSayState(btn,st){ /* 의도적으로 버튼 표시를 변경하지 않음 */ }
 function wsq(lid,i){ const d=D(lid); return d.wseq[i]||(d.wseq[i]={listen:false,speak:false}); }
 function playVocab(btn,item,rate,onDone){
+  stopCompare();
   if(sayBtn===btn){ sayTok++; stopRef(); if(synth) synth.cancel(); sayBtn=null; return; }
   if(sayBtn){ sayTok++; stopRef(); if(synth) synth.cancel(); sayBtn=null; }
   sayBtn=btn;
@@ -1215,18 +1239,12 @@ function playVocab(btn,item,rate,onDone){
 }
 function norm(t){ return String(t||'').replace(/[\s\p{P}\p{S}]/gu,''); }
 function playTextListen(btn,l,i){
+  stopCompare();
   if(sayBtn===btn){ sayTok++; stopRef(); if(synth) synth.cancel(); sayBtn=null; return; }
   if(sayBtn){ sayTok++; stopRef(); if(synth) synth.cancel(); sayBtn=null; }
   sayBtn=btn;
   const tok=++sayTok, key=l.id+':p:'+i;
-  const end=()=>{
-    if(tok!==sayTok) return;
-    if(sayBtn===btn) sayBtn=null;
-    if(lessonWindow(l.id)!=='open') return;   /* 수업 시간 밖의 듣기는 연습용: 듣기 완료로 인정하지 않음 */
-    const pd=D(l.id).p, q=pd.seq[i]||(pd.seq[i]={listen:false,speak:false});
-    q.listen=true; save();
-    if(lesson().id===l.id && S.tab==='practice') renderCard('p',i);
-  };
+  const end=()=>{ if(tok!==sayTok) return; if(sayBtn===btn) sayBtn=null; };
   const fail=()=>{ if(tok===sayTok && sayBtn===btn) sayBtn=null; };
   if(!playRef(l.sentences[i],1,end,fail)) fail();
 }
@@ -1282,24 +1300,21 @@ function cells(zh, marks){
 }
 /* 본문 문장 카드: 듣기 · 말하기(녹음) · 비교하기 */
 function cardHTML(l,k,i){
-  const s=items(l,k)[i], key=l.id+':'+k+':'+i, d=D(l.id)[k], pass=iPass(l,k,i);
+  const s=items(l,k)[i], key=l.id+':'+k+':'+i, d=D(l.id)[k], pass=false;   /* 통과·완료 표시는 쓰지 않음 */
   const recording=tcur && tcur.key===key && !tcur.stopping;
-  const seq=k==='p' ? (d.seq[i]||(d.seq[i]={listen:false,speak:false})) : null;
-  const compareAvailable=(k!=='p' || i===0 || iPass(l,'p',i-1));
-  const canSpeak=k!=='p' || !!seq.listen;
-  const canCmp=!recording && compareAvailable && (k!=='p' || !!seq.speak);
+  const canCmp=!recording, zhmode=(S.lang==='zh');
   const meaning=s[ML()]||s.ko;
   const at='data-k="'+k+'" data-i="'+i+'"';
   const vmark=pass?'<span class="okmark">✔</span>':'';
   const m=msg[key]?'<p class="res" style="color:var(--warn)">'+esc(EV()[msg[key]]||'')+'</p>':'';
-  return '<div class="s'+(pass?' pass':'')+'" id="c'+k+i+'">'+
+  return '<div class="s'+(pass?' pass':'')+(zhmode?' zhmode':'')+([...String(s.zh)].length>=17?' tight':'')+'" id="c'+k+i+'">'+
     cells(s.zh, d.marks[i])+
-    '<p class="py">'+esc(s.py)+' '+vmark+'</p>'+
+    (zhmode?'':'<p class="py">'+esc(s.py)+' '+vmark+'</p>')+
     '<p class="mean">'+esc(meaning)+'</p>'+
     '<div class="btns bw">'+
       '<button class="b" data-act="say" '+at+' data-r="1">'+esc(VT().listen)+'</button>'+
       (recording ? '<button class="b rec" data-act="tstop" '+at+'>'+esc(VT().stop)+'</button>'
-                 : '<button class="b" data-act="trec" '+at+(canSpeak?'':' disabled')+'>'+esc(VT().speak)+'</button>')+
+                 : '<button class="b" data-act="trec" '+at+'>'+esc(VT().speak)+'</button>')+
       '<button class="b" data-act="cmp" '+at+(canCmp?'':' disabled')+'>'+esc(VT().cmp)+'</button>'+
     '</div>'+m+
   '</div>';
@@ -1307,6 +1322,7 @@ function cardHTML(l,k,i){
 /* 별도 녹음: 말하기 음성 인식과 마이크를 동시에 사용하지 않습니다. */
 async function startTextRecording(i){
   if(tcur||wcur){ alert(RTX().rec); return; }
+  stopCompare();
   const l=lesson(), key=l.id+':p:'+i;
   if(synth) synth.cancel(); stopRef();
   const c={key,i,lid:l.id,k:'p',chunks:[],stopping:false,done:false};
@@ -1326,7 +1342,6 @@ async function startTextRecording(i){
   }catch(e){
     if(tcur===c) tcur=null;
     const pd=D(l.id).p; pd.st[i]='micFail'; pd.me[i]=(pd.me[i]||0)+1;
-    { const q=pd.seq[i]||(pd.seq[i]={listen:false,speak:false}); q.speak=true; }   /* 마이크 오류여도 말하기를 시도한 것으로 보고 비교하기를 엽니다 */
     msg[key]='noMic'; save(); armMicIdle(); renderCard('p',i); return;
   }
   renderCard('p',i);
@@ -1344,7 +1359,6 @@ function finishTextRecording(c){
   if(c.chunks.length){
     if(audioURL[c.key]){ try{URL.revokeObjectURL(audioURL[c.key]);}catch(e){} }
     audioURL[c.key]=URL.createObjectURL(new Blob(c.chunks,{type:(c.mr&&c.mr.mimeType)||'audio/webm'}));
-    if(c.k==='p'){ const pd=D(c.lid).p; const q=pd.seq[c.i]||(pd.seq[c.i]={listen:false,speak:false}); q.speak=true; }
     /* 목소리 감지 결과 기록 (음량 감지가 안 되는 기기는 감지된 것으로 봄). 무음이어도 비교하기는 막지 않음 */
     const heard=c.meter ? c.voiced>=VOICE_FRAMES : true;
     const d=D(c.lid).p; d.st[c.i]=heard?'ok':'noVoice';
@@ -1357,25 +1371,12 @@ function finishTextRecording(c){
   armMicIdle();
   if(lesson().id===c.lid && S.tab==='practice'){ renderCard('p',c.i); renderChips(); }
 }
-/* 비교하기: 원어민 음성 → 녹음이 있으면 학생 음성. 녹음이 없어도 원어민 재생 후 횟수를 기록 */
+/* 비교하기: 말하기 녹음이 있을 때만 원어민 → 내 소리 순서로 재생. 없으면 안내 팝업 */
 function textCompare(l,i){
-  const lid=l.id, key=lid+':p:'+i;
-  const pd0=D(lid).p, q0=pd0.seq[i]||(pd0.seq[i]={listen:false,speak:false});
-  if((tcur && tcur.key===key) || !q0.speak || (i>0 && !iPass(l,'p',i-1))) return;
-  const counted=()=>{
-    const dd=D(lid).p;
-    dd.cc[i]=Math.min(2,(+dd.cc[i]||0)+1);
-    if(dd.cc[i]>=2){ dd.cd[i]=true; dd.ce[i]=true; }
-    else { const q=dd.seq[i]||(dd.seq[i]={listen:false,speak:false}); q.listen=false; q.speak=false; }
-    save();
-    if(lesson().id===lid && S.tab==='practice'){
-      renderCard('p',i);
-      if(dd.cc[i]>=2 && i+1<l.sentences.length) renderCard('p',i+1);
-      renderChips(); renderTabs();
-    }
-  };
-  const mine=()=>playMine(key,counted);
-  if(!playRef(l.sentences[i],1,()=>setTimeout(mine,300))) mine();
+  if(tcur||wcur){ alert(RTX().rec); return; }
+  const key=l.id+':p:'+i;
+  if(!audioURL[key]){ alert(noRecMsg()); return; }
+  runCompare(l.sentences[i],1,key);
 }
 function renderCard(k,i){
   const y=window.scrollY, l=lesson();
@@ -1420,7 +1421,7 @@ function renderChips(){
   const CT=CHIPT[S.lang]||CHIPT.ko;
   $('chips').innerHTML=LESSONS.map(l=>{
     const done=lessonPass(l), gt=cardTotals(l);
-    return '<button class="chip '+(l.id===S.lesson?'on':'')+(done?' done':'')+'" data-act="lesson" data-id="'+l.id+'"><b>'+esc(LT(l))+'</b><span>'+(l.draft?CT.prep:(l.sentences.length?(l.level?esc(l.level)+' · ':'')+(done?CT.done:CT.sent+' '+gt[0]+'/'+gt[1]):CT.wf))+'</span></button>';
+    return '<button class="chip '+(l.id===S.lesson?'on':'')+(done?' done':'')+'" data-act="lesson" data-id="'+l.id+'"><b>'+esc(LT(l))+'</b><span>'+(l.draft?CT.prep:(l.sentences.length?(l.level?esc(l.level)+' · ':'')+(CT.sent+' '+gt[1]):CT.wf))+'</span></button>';
   }).join('');
   /* 선택된 과 칸이 가로 스크롤 밖에 있으면 화면 안으로 가져옵니다 */
   const cw=$('chips'), on=cw.querySelector('.chip.on');
@@ -1478,57 +1479,6 @@ const SUBMIT_GUIDE={
  zh:'请对当前页面进行全屏截图（覆盖屏幕从上到下全部内容），并将截图提交至스노우보드平台。'
 };
 function submitGuideHTML(){ return '<p class="sub">'+(SUBMIT_GUIDE[S.lang]||SUBMIT_GUIDE.ko)+'</p>'; }
-/* 단어 연습 안내 (펼치는 안내 매뉴얼). 버튼 이름은 "외국어 (한글)" 형태로 알려 줌 */
-const VHELP={
-  ko:{title:'단어 연습 안내', items:[
-    '듣기 → 말하기 → 비교하기 순서로 연습해 보세요.',
-    '말하기는 3초 뒤 자동으로 끝납니다. 먼저 끝내려면 끝내기를 누르세요.',
-    '비교하기 버튼을 누르면 단어 옆에 ✔표시가 나타납니다.',
-    '모든 단어 연습이 끝나면 아래 “단어퀴즈”를 풀어보세요.',
-    '단어퀴즈를 끝내면 몇 문제 맞혔는지(%)가 표시됩니다.',
-    '단어 연습을 처음부터 다시 하려면 리셋 버튼을 누르세요.',
-    '단어퀴즈는 다시 풀기가 가능합니다.']},
-  zh:{title:'单词练习说明 (단어 연습 안내)', items:[
-    '请按 听（듣기）→ 说（말하기）→ 对比（비교하기）的顺序完成单词练习。',
-    '说（말하기）：录音将在3秒后自动结束，如需提前终止，请点击「结束（끝내기）」按钮。',
-    '对比（비교하기）：点击后对应单词旁将自动显示✔标记。',
-    '完成全部单词练习后，请完成下方「单词测验（단어퀴즈）」。',
-    '完成「单词测验（단어퀴즈）」后，页面将自动展示答对题数与正确率（%）。',
-    '如需从头重新练习所有单词，请点击「重置（리셋）」按钮。',
-    '「单词测验（단어퀴즈）」支持不限次数重复作答。']},
-  en:{title:'Word practice guide (단어 연습 안내)', items:[
-    'Practice in this order: Listen → Speak (말하기) → Compare (비교하기).',
-    'Speaking ends automatically after 3 seconds. To finish earlier, press “Stop (끝내기)”.',
-    'When you press “Compare (비교하기)”, a ✔ mark appears next to the word.',
-    'When you have practiced all the words, do “Word quiz (단어퀴즈)” below.',
-    'When you finish “Word quiz (단어퀴즈)”, you will see how many you got right (%).',
-    'To practice the words again from the start, press the “Reset (리셋)” button.',
-    'You can retake the Word quiz (단어퀴즈).']},
-  vi:{title:'Hướng dẫn luyện từ vựng (단어 연습 안내)', items:[
-    'Luyện theo thứ tự: Nghe → Nói (말하기) → So sánh (비교하기).',
-    'Phần nói tự động kết thúc sau 3 giây. Muốn kết thúc sớm, hãy bấm “Dừng (끝내기)”.',
-    'Khi bấm “So sánh (비교하기)”, dấu ✔ sẽ hiện bên cạnh từ.',
-    'Khi luyện xong tất cả các từ, hãy làm phần “Trắc nghiệm từ vựng (단어퀴즈)” bên dưới.',
-    'Làm xong phần “Trắc nghiệm từ vựng (단어퀴즈)”, bạn sẽ thấy mình đúng bao nhiêu câu (%).',
-    'Muốn luyện lại từ vựng từ đầu, hãy bấm nút “Đặt lại (리셋)”.',
-    'Bạn có thể làm lại “Trắc nghiệm từ vựng (단어퀴즈)”.']},
-  mn:{title:'Үгийн дасгалын заавар (단어 연습 안내)', items:[
-    'Дараах дарааллаар дасгалаарай: Сонсох → Хэлэх (말하기) → Харьцуулах (비교하기).',
-    'Хэлэх нь 3 секундийн дараа автоматаар дуусна. Эрт дуусгахыг хүсвэл “Зогсоох (끝내기)” товчийг дарна уу.',
-    '“Харьцуулах (비교하기)” товчийг дарахад үгийн хажууд ✔ тэмдэг гарч ирнэ.',
-    'Бүх үгийн дасгалыг дуусгасны дараа доорх “Үгийн тест (단어퀴즈)”-г хийгээрэй.',
-    '“Үгийн тест (단어퀴즈)”-ийг дуусгавал хэдэн асуултад зөв хариулсан (%) нь харагдана.',
-    'Үгийн дасгалыг эхнээс нь дахин хийхийг хүсвэл “Дахин тохируулах (리셋)” товчийг дарна уу.',
-    '“Үгийн тест (단어퀴즈)”-г дахин хийж болно.']},
-  ja:{title:'単語練習のご案内 (단어 연습 안내)', items:[
-    '次の順番で練習しましょう：聞く → 話す（말하기）→ 聞き比べ（비교하기）。',
-    '話す練習は3秒後に自動で終わります。早く終えるには「止める（끝내기）」を押してください。',
-    '「聞き比べ（비교하기）」を押すと、単語の横に ✔ マークが表示されます。',
-    'すべての単語の練習が終わったら、下の「単語クイズ（단어퀴즈）」を解きましょう。',
-    '「単語クイズ（단어퀴즈）」を終えると、何問正解したか（％）が表示されます。',
-    '単語練習を最初からやり直すには、「リセット（리셋）」ボタンを押してください。',
-    '「単語クイズ（단어퀴즈）」はやり直すことができます。']}
-};
 /* 단어 말하기를 모두 마치면 “단어퀴즈” 버튼이 열리고, 열면 단어 목록은 접힘 */
 const VGATE={
   ko:{progress:(x,n)=>'단어 말하기 '+x+' / '+n+' 완료', lock:'모든 단어에 ✔가 생기면 “단어퀴즈”를 시작할 수 있어요.', ready:'단어 말하기를 모두 마쳤어요. 이제 단어퀴즈를 시작하세요.', startBtn:'단어퀴즈'},
@@ -1545,48 +1495,6 @@ function gateHTML(l){
   return '<p class="small" id="qprog">'+esc(G.progress(x,n))+'</p><p class="small" id="qhint">'+esc(ok?G.ready:G.lock)+'</p>'+
     '<button class="b pri" id="qopenbtn" data-act="qopen"'+(ok?'':' disabled')+'>'+esc(G.startBtn)+'</button>';
 }
-function updGate(){
-  const l=lesson(); if(S.tab!=='vocab' || quizOpen(l)) return;
-  const n=l.vocab.length, x=wordsDoneCount(l), ok=x>=n, G=VG();
-  const p=$('qprog'), h=$('qhint'), b=$('qopenbtn'), w=$('wprog');
-  if(p) p.textContent=G.progress(x,n);
-  if(h) h.textContent=ok?G.ready:G.lock;
-  if(b) b.disabled=!ok;
-  if(w) w.textContent=G.progress(x,n);
-}
-/* 본문 연습 안내 (본문 탭, 펼치는 안내 매뉴얼) */
-const THELP={
-  ko:{title:'본문 연습 안내', items:[
-    {t:'듣기 → 말하기 → 비교하기를 순서대로 2회 진행하세요.', sub:['듣기는 언제든 다시 들을 수 있습니다. 원어민 음성을 끝까지 들으면 말하기가 활성화됩니다.','말하기를 누르고 문장을 말하면 내 목소리가 녹음됩니다. 녹음이 끝나면 비교하기가 활성화됩니다.','비교하기를 마치면 다시 듣기부터 진행하세요.','듣기 → 말하기 → 비교하기를 2회 완료하면 병음 옆에 ✔가 뜨고 다음 문장의 비교하기가 활성화됩니다.']},
-    '말하기는 8초 뒤 자동으로 끝납니다. 먼저 끝내려면 끝내기를 누르세요.',
-    '앱은 이제 발음을 판정하지 않습니다. 편하게 연습하세요.'
-]},
-  zh:{title:'本文练习说明 (본문 연습 안내)', items:[
-    {t:'请按「听듣기 → 说말하기 → 对比비교하기」的顺序完成2轮完整练习。', sub:['点击「听듣기」按钮，聆听母语者标准发音示范。','点击「说말하기」按钮后朗读句子，系统将自动录制你的语音。','点击「对比비교하기」按钮，对照母语者发音校准自身朗读细节。','累计完成2次「对比비교하기」操作后，对应句子的拼音旁将自动显示✔标记。','页面出现✔后，即可切换至下一句继续练习。']},
-    '录音将在8秒后自动终止，如需提前结束，请点击「结束끝내기」按钮。',
-    '当前版本暂不支持发音自动评判功能，请你轻松完成练习即可。'
-]},
-  en:{title:'Text practice guide (본문 연습 안내)', items:[
-    {t:'Complete the Listen → Speak → Compare sequence twice.', sub:['Press Listen to hear the native speaker’s pronunciation.','Press Speak and say the sentence; your voice will be recorded.','Press Compare to compare the native speaker’s pronunciation with yours.','After completing Compare twice, a ✔ appears next to the pinyin.','When ✔ appears, practice the next sentence.']},
-    'Speaking ends automatically after 8 seconds. To finish earlier, press Stop.',
-    'The app no longer evaluates your pronunciation. Relax and practice.'
-]},
-  vi:{title:'Hướng dẫn luyện bài khóa (본문 연습 안내)', items:[
-    {t:'Hoàn thành 2 lần theo thứ tự: Nghe → Nói → So sánh.', sub:['Nhấn Nghe để nghe cách phát âm của người bản ngữ.','Nhấn Nói và đọc câu; giọng nói của bạn sẽ được ghi âm.','Nhấn So sánh để so sánh cách phát âm của người bản ngữ với cách phát âm của bạn.','Sau khi hoàn thành So sánh 2 lần, dấu ✔ sẽ xuất hiện bên cạnh phiên âm pinyin.','Khi dấu ✔ xuất hiện, hãy luyện tập câu tiếp theo.']},
-    'Phần nói sẽ tự động kết thúc sau 8 giây. Nếu muốn kết thúc sớm, hãy nhấn Dừng.',
-    'Ứng dụng hiện không đánh giá phát âm của bạn. Hãy thoải mái luyện tập.'
-]},
-  mn:{title:'Хичээлийн эхийн дасгалын заавар (본문 연습 안내)', items:[
-    {t:'Сонсох → Хэлэх → Харьцуулах дарааллаар нийт 2 удаа дасгал хийнэ үү.', sub:['Сонсох товчийг дарж төрөлх хэлтэй хүний дуудлагыг сонсоно уу.','Хэлэх товчийг дарж өгүүлбэрийг хэлэхэд таны дуу хоолой бичигдэнэ.','Харьцуулах товчийг дарж төрөлх хэлтэй хүний дуудлагыг өөрийн дуудлагатай харьцуулна уу.','Харьцуулах үйлдлийг 2 удаа хийсний дараа пиньиний хажууд ✔ тэмдэг гарна.','✔ тэмдэг гарвал дараагийн өгүүлбэрийг дасгал хийнэ үү.']},
-    'Хэлэх үйлдэл 8 секундын дараа автоматаар дуусна. Эрт дуусгахын тулд Зогсоох товчийг дарна уу.',
-    'Апп одоо дуудлагыг үнэлэхгүй. Тайван дасгал хийнэ үү.'
-]},
-  ja:{title:'本文練習のご案内 (본문 연습 안내)', items:[
-    {t:'「聞く → 話す → 比べる」の順番で2回練習してください。', sub:['「聞く」を押して、ネイティブの発音を聞いてください。','「話す」を押して文を話すと、自分の声が録音されます。','「比べる」を押して、ネイティブの発音と自分の発音を比べてください。','「比べる」を2回完了すると、ピンインの横に✔が表示されます。','✔が表示されたら、次の文を練習してください。']},
-    '話す機能は8秒後に自動的に終了します。早く終了するには「終了」を押してください。',
-    'アプリは発音を判定しなくなりました。気軽に練習してください。'
-]}
-};
 /* 탭 잠금·리셋 확인창 안내 문구 */
 const TABMSG={
   ko:{p:'단어퀴즈를 완료해야 본문 탭이 열립니다.', q:'본문 연습을 완료해야 퀴즈 탭이 열립니다.', c:'퀴즈를 완료하세요.', s:'점검을 완료하세요.', closed:'연습 가능 시간이 아닙니다.', wall:'단어 말하기 기록을 지울까요?', pall:'본문 전체 기록을 지울까요?', qall:'퀴즈를 다시 풀까요?', vall:'단어퀴즈를 다시 풀까요?', hear:'음성을 끝까지 들은 뒤 답을 고르세요.'},
@@ -1596,16 +1504,6 @@ const TABMSG={
   ja:{p:'単語クイズを完了すると本文タブが開きます。', q:'本文練習を完了するとクイズタブが開きます。', c:'クイズを完了してください。', s:'点検を完了してください。', closed:'練習できる時間ではありません。', wall:'単語の話す練習の記録をすべて消しますか？', pall:'本文全体の記録を消しますか？', qall:'クイズをもう一度解きますか？', vall:'単語クイズをもう一度解きますか？', hear:'音声を最後まで聞いてから答えを選んでください。'}
 };
 const TM=()=>TABMSG[S.lang]||TABMSG.ko;
-function textHelpHTML(){
-  const H=THELP[S.lang]||THELP.ko;
-  return helpOpen()+'<summary>'+esc(H.title)+'</summary><ol>'+H.items.map(it=>
-    typeof it==='string' ? '<li>'+esc(it)+'</li>'
-      : '<li>'+esc(it.t)+'<ul>'+it.sub.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></li>').join('')+'</ol></details>';
-}
-function vocabHelpHTML(){
-  const H=VHELP[S.lang]||VHELP.ko;
-  return helpOpen()+'<summary>'+esc(H.title)+'</summary><ol>'+H.items.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol></details>';
-}
 
 /* 단어 말하기: 점수·판정 없이 녹음 → 내 소리 듣기 → 원어민과 비교 (음성 인식은 쓰지 않음) */
 /* 녹음 중 마이크 음량을 재서 목소리가 있었는지 기록(제출 화면의 '소리 없음' 표시용). ✔는 비교 재생이 끝났을 때 표시.
@@ -1633,31 +1531,28 @@ function watchVoice(c){
 let wcur=null; const wmsg={};
 function vwHTML(l,i){
   const w=l.vocab[i], T=VT(), key=l.id+':v:'+i;
-  const rec=!!(wcur && wcur.key===key && !wcur.stopping), ws=wsq(l.id,i), canSpeak=!!ws.listen, canCmp=!rec && !!ws.speak;
+  const rec=!!(wcur && wcur.key===key && !wcur.stopping), canCmp=!rec;
   const meaning=esc(w[ML()]||w.ko);
   const m=wmsg[key]?'<p class="res" style="color:var(--warn)">'+esc(VT()[wmsg[key]]||'')+'</p>':'';
   return '<div class="vw vg" id="vw'+i+'">'+
-    '<div class="vg-a"><b class="hz" lang="zh-CN">'+esc(w.zh)+'</b><span class="py2">'+esc(w.py)+'</span>'+(D(l.id).wdone[i]?'<span class="okmark">✔</span>':'')+'</div>'+
+    '<div class="vg-a"><b class="hz" lang="zh-CN">'+esc(w.zh)+'</b>'+(S.lang==='zh'?'':'<span class="py2">'+esc(w.py)+'</span>')+'</div>'+
     '<button class="b" data-act="vsay" data-i="'+i+'">'+esc(T.listen)+'</button>'+
-    (rec?'<button class="b rec" data-act="wstop" data-i="'+i+'">'+esc(T.stop)+'</button>':'<button class="b" data-act="wrec" data-i="'+i+'"'+(canSpeak?'':' disabled')+'>'+esc(T.speak)+'</button>')+
+    (rec?'<button class="b rec" data-act="wstop" data-i="'+i+'">'+esc(T.stop)+'</button>':'<button class="b" data-act="wrec" data-i="'+i+'">'+esc(T.speak)+'</button>')+
     '<span class="vg-m">'+meaning+'</span>'+
     '<button class="b vg-c" data-act="wcmp" data-i="'+i+'"'+(canCmp?'':' disabled')+'>'+esc(T.cmp)+'</button>'+
     m+'</div>';
 }
-/* 단어 비교하기: 원어민 → 내 소리 순서로 끝까지 재생하면 ✔. 녹음이 없는 기기는 원어민 재생이 끝나면 ✔ */
+/* 단어 비교하기: 말하기 녹음이 있을 때만 원어민 → 내 소리 순서로 재생. 없으면 안내 팝업 */
 function wordCompare(l,i){
-  if(!wsq(l.id,i).speak) return;
-  const lid=l.id, key=lid+':v:'+i, fin=()=>markWordDone(lid,i);
-  const mine=()=>{ if(!audioURL[key]){ fin(); return; } playMine(key,fin); };
-  if(!playRef(l.vocab[i],0.9,()=>setTimeout(mine,300))) mine();
-}
-function markWordDone(lid,i){
-  const d=D(lid); d.wdone[i]=true; d.wever[i]=true; d.wseq[i]={listen:false,speak:false}; save();
-  if(lesson().id===lid && S.tab==='vocab'){ renderWord(i); updGate(); renderTabs(); }
+  if(wcur||tcur){ alert(RTX().rec); return; }
+  const key=l.id+':v:'+i;
+  if(!audioURL[key]){ alert(noRecMsg()); return; }
+  runCompare(l.vocab[i],0.9,key);
 }
 function renderWord(i){ const y=window.scrollY, l=lesson(), el=$('vw'+i); if(el && l.vocab[i]) el.outerHTML=vwHTML(l,i); window.scrollTo(0,y); }
 async function startWord(i){
   if(wcur||tcur) return;
+  stopCompare();
   const l=lesson(), key=l.id+':v:'+i;
   if(synth) synth.cancel();
   stopRef();
@@ -1674,7 +1569,7 @@ async function startWord(i){
     { const dw=D(l.id); dw.wtc[i]=(dw.wtc[i]||0)+1; save(); }      /* 말하기 시작 횟수 */
   }catch(e){
     /* 마이크를 못 쓰는 폰: 횟수는 세지 않고 상태만 기록. 비교하기(원어민 재생)는 그대로 눌러서 ✔ 가능 */
-    wcur=null; wmsg[key]='micFail'; D(l.id).wst[i]='micFail'; wsq(l.id,i).speak=true; save();
+    wcur=null; wmsg[key]='micFail'; D(l.id).wst[i]='micFail'; save();
     renderWord(i); return;
   }
   c.timer=setTimeout(stopWord,3000);
@@ -1689,7 +1584,6 @@ function finishWord(c){
   if(c.done) return; c.done=true; if(wcur===c) wcur=null;
   armMicIdle();
   if(c.vstop) c.vstop();
-  wsq(c.lid,c.i).speak=true;
   if(c.chunks.length){
     if(audioURL[c.key]) URL.revokeObjectURL(audioURL[c.key]);
     audioURL[c.key]=URL.createObjectURL(new Blob(c.chunks,{type:(c.mr&&c.mr.mimeType)||'audio/webm'}));
@@ -1698,7 +1592,7 @@ function finishWord(c){
     D(c.lid).wst[c.i]=heard?'ok':'noVoice'; save();
     if(!heard) wmsg[c.key]='noVoice';
   }
-  if(lesson().id===c.lid && S.tab==='vocab'){ renderWord(c.i); updGate(); }
+  if(lesson().id===c.lid && S.tab==='vocab'){ renderWord(c.i); }
 }
 function renderTabs(){
   const l=lesson(), T=tabsOf(l);
@@ -1716,7 +1610,7 @@ function drillView(l,k){
   const arr=items(l,k);
   if(!arr.length) return '<div class="card2"><h2>'+KLABEL[k]+' 준비 중</h2><p>곧 등록돼요. 먼저 <b>단어 탭</b>에서 연습하세요.</p></div>';
   h+=voiceNoticeHTML();
-  return h+textHelpHTML()+listHTML(l,k)+(k==='p'?'<div class="rsrow"><button class="reset" data-act="preset">본문 전체 리셋</button></div>':'');
+  return h+listHTML(l,k)+(k==='p'?'<div class="rsrow"><button class="reset" data-act="preset">본문 전체 리셋</button></div>':'');
 }
 let vqClosed=false;   /* 단어퀴즈를 접어 둔 상태 기억 */
 document.addEventListener('toggle',e=>{ if(e.target && e.target.id==='vquiz') vqClosed=!e.target.open; },true);
@@ -1732,9 +1626,8 @@ function renderView(){
     const n=l.vocab.length, k=Math.min(4,n), T=VT();
     if(!n){ $('view').innerHTML='<div class="card2"><h2>단어 준비 중</h2><p>곧 등록돼요.</p></div>'; return; }
     const optsOf=i=>{ const o=[]; for(let j=0;j<k;j++) o.push((i+j)%n); const r=(i*3+1)%k; return o.slice(r).concat(o.slice(0,r)); };
-    h+=voiceNoticeHTML()+vocabHelpHTML();
-    const open=quizOpen(l), G=VG();
-    h+='<details class="card2 wl" id="wl"'+' open'+'><summary>'+esc(T.listHead(n))+' <span class="small" id="wprog">'+esc(G.progress(wordsDoneCount(l),n))+'</span></summary>'+l.vocab.map((w,i)=>vwHTML(l,i)).join('')+'</details>';
+    h+=voiceNoticeHTML();
+    h+='<details class="card2 wl" id="wl"'+' open'+'><summary>'+esc(T.listHead(n))+'</summary>'+l.vocab.map((w,i)=>vwHTML(l,i)).join('')+'</details>';
     h+='<div class="rsrow"><button class="reset" data-act="wreset">단어 말하기 리셋</button></div>';
   }
   if(S.tab==='quiz'){
@@ -1911,7 +1804,7 @@ document.addEventListener('click',e=>{
   else if(a==='ans'){ const q=+b.dataset.q, item=l.quiz[q]; if(item && item.type==='listen' && !d.qheard[q]){ alert(TM().hear); return; } if(d.quiz[q]==null){ d.quiz[q]=+b.dataset.o; if(quizDone(l)){ d.qh.push(quizScore(l)); d.qw[d.qh.length-1]=quizWrong(l); } save(); renderQuizKeepScroll(); } }
   else if(a==='checkSentence'){ const i=+b.dataset.i, v=b.dataset.value; if(!d.check.history[i]){ d.check.history[i]=[]; if(d.check.sentences[i]) d.check.history[i].push(d.check.sentences[i]); } d.check.sentences[i]=v; d.check.history[i].push(v); save(); renderPracticeKeepScroll(); }
   else if(a==='quizreset'){ if(!confirm(TM().qall)) return; d.quiz={}; d.qperm={}; d.qheard={}; save(); renderQuizKeepScroll(); scrollToFirstItem('#view .card2 .q'); }
-  else if(a==='vsay'){ playVocab(b, l.vocab[i], 1, ()=>{ if(lessonWindow(l.id)!=='open') return; const ws=wsq(l.id,i); if(ws.listen) return; ws.listen=true; save(); if(lesson().id===l.id && S.tab==='vocab') renderWord(i); }); }
+  else if(a==='vsay'){ playVocab(b, l.vocab[i], 1); }
   else if(a==='qopen'){ if(wordsDoneCount(l)>=l.vocab.length){ d.qopen=true; vqClosed=false; save(); renderView(); const q=$('vquiz'); if(q) q.scrollIntoView({block:'start'}); } }
   else if(a==='wrec'){ startWord(i); }
   else if(a==='wstop'){ stopWord(); }
